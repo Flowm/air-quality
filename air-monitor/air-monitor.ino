@@ -17,6 +17,7 @@
 #define SEALEVELPRESSURE_HPA 1013.25
 
 int mq135_data;
+int counter = 0;
 
 Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
 struct bme280_data {
@@ -50,10 +51,15 @@ void loop() {
   bme_data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
   mq135_data = analogRead(MQ135_A);
 
+  // Readable
+  //Serial.printf(
+  //    "%4.2f *C, %5.3f %%RH, %7.2f hPA, %6.2f m, %4d mq\n\r",
+  //    bme_data.temp, bme_data.humidity, bme_data.pressure, bme_data.altitude, mq135_data);
+
+  // CSV
   Serial.printf(
-      "%4.2f *C, %5.3f %%RH, %7.2f hPA, %6.2f m, %4d mq\n\r", // Readable
-      //"%04.2f,%05.3f,%07.2f,%06.2f,%04d\n\r", // CSV
-      bme_data.temp, bme_data.humidity, bme_data.pressure, bme_data.altitude, mq135_data);
+      "%05d,%04.2f,%05.3f,%07.2f,%06.2f,%04d\n\r",
+      counter++%2048, bme_data.temp, bme_data.humidity, bme_data.pressure, bme_data.altitude, mq135_data);
 
   delay(100);
 }
