@@ -1,0 +1,263 @@
+[
+    {
+        "id": "18b5eed9.ba3b09",
+        "type": "tab",
+        "label": "SensorChatbot"
+    },
+    {
+        "id": "75ef9c7a.7a0dac",
+        "type": "telegram receiver",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "bot": "e1b6579b.b56d58",
+        "x": 138.44451904296875,
+        "y": 446.22222900390625,
+        "wires": [
+            [],
+            [
+                "d2688f24.7aa438"
+            ]
+        ]
+    },
+    {
+        "id": "27bceb42.b4850c",
+        "type": "telegram sender",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "bot": "e1b6579b.b56d58",
+        "x": 841.5,
+        "y": 172,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "bae320c.f307de",
+        "type": "function",
+        "z": "18b5eed9.ba3b09",
+        "name": "Check max",
+        "func": "var aq = msg.payload;\n\nif (aq.max > 2) {\n    var notify = {};\n    notify.payload = {};\n    notify.payload.content = \"Air quality below threshold\";\n    notify.payload.chatId = \"11192536\";\n    notify.payload.type = \"message\";\n    return notify;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 454.5,
+        "y": 207.75,
+        "wires": [
+            [
+                "e4e59310.38ecd"
+            ]
+        ]
+    },
+    {
+        "id": "46a8e7bb.de16c",
+        "type": "debug",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "true",
+        "x": 802,
+        "y": 228,
+        "wires": []
+    },
+    {
+        "id": "317976e8.a05802",
+        "type": "telegram sender",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "bot": "e1b6579b.b56d58",
+        "x": 948.2222900390625,
+        "y": 341.3333435058594,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "11565519.958a9b",
+        "type": "mqtt in",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "topic": "aq-processed",
+        "qos": "0",
+        "broker": "c1cf7c8d.ce2c38",
+        "x": 140.5,
+        "y": 171.25,
+        "wires": [
+            [
+                "6c56ef09.0bc868",
+                "c5a6db15.d73e88"
+            ]
+        ]
+    },
+    {
+        "id": "6c56ef09.0bc868",
+        "type": "debug",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 306,
+        "y": 134,
+        "wires": []
+    },
+    {
+        "id": "c5a6db15.d73e88",
+        "type": "json",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "x": 288,
+        "y": 208,
+        "wires": [
+            [
+                "bae320c.f307de"
+            ]
+        ]
+    },
+    {
+        "id": "e4e59310.38ecd",
+        "type": "delay",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 634.5,
+        "y": 172.75,
+        "wires": [
+            [
+                "27bceb42.b4850c",
+                "46a8e7bb.de16c"
+            ]
+        ]
+    },
+    {
+        "id": "d491dbd4.9aa5f",
+        "type": "sqlite",
+        "z": "18b5eed9.ba3b09",
+        "mydb": "80bcdc23.753798",
+        "name": "SensorDB",
+        "x": 527.2222900390625,
+        "y": 423.3333435058594,
+        "wires": [
+            [
+                "8d5a1b5f.68b4e",
+                "f5d6f96d.113198"
+            ]
+        ]
+    },
+    {
+        "id": "8d5a1b5f.68b4e",
+        "type": "debug",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 700.2222900390625,
+        "y": 472.3333435058594,
+        "wires": []
+    },
+    {
+        "id": "d2688f24.7aa438",
+        "type": "function",
+        "z": "18b5eed9.ba3b09",
+        "name": "SELECT LAST",
+        "func": "var msg = {};\nmsg.topic = \"SELECT * FROM sensors ORDER BY id DESC LIMIT 1;\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 352.6111145019531,
+        "y": 454.08331298828125,
+        "wires": [
+            [
+                "d491dbd4.9aa5f"
+            ]
+        ]
+    },
+    {
+        "id": "4609e6cb.709898",
+        "type": "inject",
+        "z": "18b5eed9.ba3b09",
+        "name": "SELECT LAST",
+        "topic": "SELECT * FROM sensors ORDER BY id DESC LIMIT 1;",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "x": 355.2222900390625,
+        "y": 393.3333435058594,
+        "wires": [
+            [
+                "d491dbd4.9aa5f"
+            ]
+        ]
+    },
+    {
+        "id": "f5d6f96d.113198",
+        "type": "function",
+        "z": "18b5eed9.ba3b09",
+        "name": "Prepare message",
+        "func": "var aq = msg.payload[0];\n\nvar response = {};\nresponse.payload = {};\nresponse.payload.content = JSON.stringify(aq);\nresponse.payload.chatId = \"11192536\";\nresponse.payload.type = \"message\";\nreturn response;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 719.2222900390625,
+        "y": 381.3333435058594,
+        "wires": [
+            [
+                "317976e8.a05802",
+                "9305e2fd.a800e"
+            ]
+        ]
+    },
+    {
+        "id": "9305e2fd.a800e",
+        "type": "debug",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 923.2222900390625,
+        "y": 416.3333435058594,
+        "wires": []
+    },
+    {
+        "id": "e1b6579b.b56d58",
+        "type": "telegram bot",
+        "z": "",
+        "botname": "AirBot",
+        "usernames": "[]",
+        "chatids": "[]"
+    },
+    {
+        "id": "c1cf7c8d.ce2c38",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "80bcdc23.753798",
+        "type": "sqlitedb",
+        "z": "",
+        "db": "/home/pi/db/aq.db"
+    }
+]
