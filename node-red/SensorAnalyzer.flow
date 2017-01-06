@@ -1,0 +1,313 @@
+ [
+    {
+        "id": "c4adf36d.5a4ac",
+        "type": "rpi-neopixels",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "pixels": "8",
+        "bgnd": "0,7,0,0,0",
+        "fgnd": "",
+        "wipe": "1",
+        "mode": "pcentneedle",
+        "rgb": "rgb",
+        "x": 862,
+        "y": 210,
+        "wires": []
+    },
+    {
+        "id": "2d92c056.784ac",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "Color Processor",
+        "func": "var green = \"0,7,0,100,0\";\nvar yellow = \"0,7,100,100,0\";\nvar orange = \"0,7,100,60,0\";\nvar red = \"0,7,100,0,0\";\nvar inactive = \"0,7,0,0,0\";\n\nvar curStatus = msg.payload;\nvar r = 100;\nvar g = 100;\nvar b = 100;\nvar tmp = 0;\n\nif (curStatus >= 0 && curStatus < 1) {\n    r = 0;\n    b = 0;\n} else if (curStatus >= 1 && curStatus < 2) {\n    r *= (curStatus - 1);\n    b = 0;\n} else if (curStatus >= 2 && curStatus < 3) {\n    tmp = (curStatus - 2);\n    g -= (g * tmp * 0.4);\n    b = 0;\n} else if (curStatus >= 3 && curStatus < 4) {\n    tmp = 1 - (curStatus - 3);\n    g *= (tmp * 0.6);\n    b = 0;\n} else if (curStatus >= 4 && curStatus < 5) {\n    g = 0;\n    b = 0;\n} else {\n    r = 0;\n    g = 0;\n    b = 0;\n}\n\nmsg.payload = \"0,7,\"+parseInt(r)+\",\"+parseInt(g)+\",\"+parseInt(b);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 612.5,
+        "y": 167,
+        "wires": [
+            [
+                "c4adf36d.5a4ac",
+                "95a54c8f.8aa7b"
+            ]
+        ]
+    },
+    {
+        "id": "7e13e3a5.22bd6c",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "Random status",
+        "func": "var value = Math.random() * 20\nmsg.payload = value\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 352.5,
+        "y": 186,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "58396660.c8eac8",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "Value Increment",
+        "func": "var currentStatus = flow.get('status')||0\n\ncurrentStatus += 0.05\ncurrentStatus = currentStatus % 5\n\nflow.set('status',currentStatus)\n\nmsg.payload = currentStatus\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360.5,
+        "y": 112,
+        "wires": [
+            [
+                "2d92c056.784ac",
+                "8e41e82b.83ef88"
+            ]
+        ]
+    },
+    {
+        "id": "95a54c8f.8aa7b",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 861.5,
+        "y": 166,
+        "wires": []
+    },
+    {
+        "id": "8e41e82b.83ef88",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 616.5,
+        "y": 112,
+        "wires": []
+    },
+    {
+        "id": "f5e26680.dc8c1",
+        "type": "mqtt in",
+        "z": "a4031254.d54bd",
+        "name": "Sensor values",
+        "topic": "aq-raw",
+        "qos": "0",
+        "broker": "c1cf7c8d.ce2c38",
+        "x": 96.5,
+        "y": 349,
+        "wires": [
+            [
+                "d0a90eda.88c46"
+            ]
+        ]
+    },
+    {
+        "id": "7c0bd638.f47248",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "MQ135 Analzyer",
+        "func": "var mqVal = msg.payload;\nvar mqStatus = 0;\n\n//Analyzing values\n//mqStatus = (5 * mqVal) / 1024;\nif (mqVal <= 50) {\n    mqStatus = (mqVal / 50);\n} else if (mqVal <= 150) {\n    mqStatus = 1 + (mqVal / 150);\n} else if (mqVal <= 350) {\n    mqStatus = 2 + (mqVal / 350);\n} else if (mqVal <= 600) {\n    mqStatus = 3 + (mqVal / 600);\n} else {\n    mqStatus = 4 + (mqVal / 1024);\n}\n\nmsg.payload = {};\nmsg.payload.raw = mqVal;\nmsg.payload.type = 'mq';\nmsg.payload.processed = mqStatus;\n\nreturn msg;",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 747,
+        "y": 393,
+        "wires": [
+            [
+                "c4e70eb7.50634",
+                "d83bc164.ed444"
+            ]
+        ]
+    },
+    {
+        "id": "16aa8a81.805e45",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "Temp & RH Analyzer",
+        "func": "var rh = msg.payload.rh / 100;\nvar temp = msg.payload.temp;\n\nvar dewPoint = Math.pow(rh, 1 / 8) * (112 + 0.9 * temp) + 0.1 * temp - 112;\nvar expIndex = 5417.753 * ((1 / 273.16) - (1 / (dewPoint + 273.16)));\nvar humidex = temp + 0.5555 * (6.11 * Math.exp(expIndex) - 10);\n\n//Convert to 1-5 scala\nvar integer = parseInt(humidex / 10) - 1;\nif (integer < 0) {\n    integer = 0;\n}\nvar decimal = humidex % 10;\nvar convertedValue = integer + (decimal / 10);\n\nmsg.payload.raw = humidex;\nmsg.payload.type = 'trh';\nmsg.payload.processed = convertedValue;\n\nreturn msg;",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 768,
+        "y": 438,
+        "wires": [
+            [
+                "f483bc71.75801",
+                "d83bc164.ed444"
+            ]
+        ]
+    },
+    {
+        "id": "486f2e44.64761",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "Raw Values Split",
+        "func": "var rh = parseFloat(msg.payload.humidity);\nvar temp = parseFloat(msg.payload.temperature);\nvar rht = {rh: rh, temp: temp};\nvar mq = parseInt(msg.payload.mq135);\n\nvar mqPayload = {payload: mq};\nvar rhtPayload = {payload: rht};\n\nreturn [mqPayload, rhtPayload];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 521.5,
+        "y": 417,
+        "wires": [
+            [
+                "7c0bd638.f47248"
+            ],
+            [
+                "16aa8a81.805e45"
+            ]
+        ]
+    },
+    {
+        "id": "ffc8b9b6.541648",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 520.5,
+        "y": 347,
+        "wires": []
+    },
+    {
+        "id": "d0a90eda.88c46",
+        "type": "json",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "x": 290.5,
+        "y": 348,
+        "wires": [
+            [
+                "486f2e44.64761",
+                "ffc8b9b6.541648"
+            ]
+        ]
+    },
+    {
+        "id": "f483bc71.75801",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 996.5,
+        "y": 453,
+        "wires": []
+    },
+    {
+        "id": "c4e70eb7.50634",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 996.5,
+        "y": 363,
+        "wires": []
+    },
+    {
+        "id": "a4e3f6a3.1017e8",
+        "type": "rpi-neopixels",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "pixels": "8",
+        "bgnd": "0,7,0,0,0",
+        "fgnd": "",
+        "wipe": "1",
+        "mode": "pcentneedle",
+        "rgb": "rgb",
+        "x": 1499,
+        "y": 429,
+        "wires": []
+    },
+    {
+        "id": "8ac63d1e.0a596",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "Ambient Light Controller",
+        "func": "var green = \"0,7,0,100,0\";\nvar yellow = \"0,7,100,100,0\";\nvar orange = \"0,7,100,60,0\";\nvar red = \"0,7,100,0,0\";\nvar inactive = \"0,7,0,0,0\";\n\nvar curStatus = msg.payload.max;\nvar r = 255;\nvar g = 255;\nvar b = 255;\nvar tmp = 0;\n\nif (curStatus >= 0 && curStatus < 1) {\n    r = 0;\n    b = 0;\n} else if (curStatus < 2) {\n    r *= (curStatus - 1);\n    b = 0;\n} else if (curStatus < 3) {\n    tmp = (curStatus - 2);\n    g -= (g * tmp * 0.4);\n    b = 0;\n} else if (curStatus < 4) {\n    tmp = 1 - (curStatus - 3);\n    g *= (tmp * 0.6);\n    b = 0;\n} else if (curStatus < 5) {\n    g = 0;\n    b = 0;\n} else {\n    r = 0;\n    g = 0;\n    b = 0;\n}\n\nmsg.payload = \"0,7,\"+parseInt(r)+\",\"+parseInt(g)+\",\"+parseInt(b);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1268.5,
+        "y": 429,
+        "wires": [
+            [
+                "a4e3f6a3.1017e8",
+                "e24df9f1.a60658"
+            ]
+        ]
+    },
+    {
+        "id": "e24df9f1.a60658",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 1504.5,
+        "y": 364,
+        "wires": []
+    },
+    {
+        "id": "5ec09ada.d696c4",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 1207,
+        "y": 474,
+        "wires": []
+    },
+    {
+        "id": "d83bc164.ed444",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "Value Join",
+        "func": "var trh = context.get('trh')||0;\nvar mq = context.get('mq')||0;\n\nif (msg.payload.type == 'trh') {\n    trh = msg.payload;\n    delete trh.type;\n    context.set('trh', trh);\n} else if (msg.payload.type == 'mq') {\n    mq = msg.payload;\n    delete mq.type;\n    context.set('mq', mq);\n}\n\nmsg = {};\nmsg.payload = {};\nmsg.payload.trh = trh;\nmsg.payload.mq = mq;\nmsg.payload.max = Math.max(trh.processed, mq.processed);\nif (trh.processed > mq.processed) {\n    msg.payload.type = \"trh\";\n} else {\n    msg.payload.type = \"mq\";\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 996.5,
+        "y": 409,
+        "wires": [
+            [
+                "5ec09ada.d696c4",
+                "8ac63d1e.0a596",
+                "fc05e188.af63e"
+            ]
+        ]
+    },
+    {
+        "id": "fc05e188.af63e",
+        "type": "mqtt out",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "topic": "aq-processed",
+        "qos": "0",
+        "retain": "false",
+        "broker": "c1cf7c8d.ce2c38",
+        "x": 1239.5,
+        "y": 383,
+        "wires": []
+    },
+    {
+        "id": "c1cf7c8d.ce2c38",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
