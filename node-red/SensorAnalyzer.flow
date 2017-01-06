@@ -1,4 +1,4 @@
- [
+[
     {
         "id": "c4adf36d.5a4ac",
         "type": "rpi-neopixels",
@@ -107,11 +107,11 @@
         "type": "function",
         "z": "a4031254.d54bd",
         "name": "MQ135 Analzyer",
-        "func": "var mqVal = msg.payload;\nvar mqStatus = 0;\n\n//Analyzing values\n//mqStatus = (5 * mqVal) / 1024;\nif (mqVal <= 50) {\n    mqStatus = (mqVal / 50);\n} else if (mqVal <= 150) {\n    mqStatus = 1 + (mqVal / 150);\n} else if (mqVal <= 350) {\n    mqStatus = 2 + (mqVal / 350);\n} else if (mqVal <= 600) {\n    mqStatus = 3 + (mqVal / 600);\n} else {\n    mqStatus = 4 + (mqVal / 1024);\n}\n\nmsg.payload = {};\nmsg.payload.raw = mqVal;\nmsg.payload.type = 'mq';\nmsg.payload.processed = mqStatus;\n\nreturn msg;",
+        "func": "if (msg.payload === null) {\n    return null;\n}\nvar mqVal = parseInt(msg.payload);\nvar mqStatus = 0;\n\n//Analyzing values\n//mqStatus = (5 * mqVal) / 1024;\nif (mqVal <= 50) {\n    mqStatus = (mqVal / 50);\n} else if (mqVal <= 150) {\n    mqStatus = 1 + (mqVal / 150);\n} else if (mqVal <= 350) {\n    mqStatus = 2 + (mqVal / 350);\n} else if (mqVal <= 600) {\n    mqStatus = 3 + (mqVal / 600);\n} else {\n    mqStatus = 4 + (mqVal / 1024);\n}\n\nmsg.payload = {};\nmsg.payload.raw = mqVal;\nmsg.payload.type = 'mq';\nmsg.payload.processed = mqStatus;\n\nreturn msg;",
         "outputs": "1",
         "noerr": 0,
         "x": 747,
-        "y": 393,
+        "y": 376,
         "wires": [
             [
                 "c4e70eb7.50634",
@@ -124,14 +124,13 @@
         "type": "function",
         "z": "a4031254.d54bd",
         "name": "Temp & RH Analyzer",
-        "func": "var rh = msg.payload.rh / 100;\nvar temp = msg.payload.temp;\n\nvar dewPoint = Math.pow(rh, 1 / 8) * (112 + 0.9 * temp) + 0.1 * temp - 112;\nvar expIndex = 5417.753 * ((1 / 273.16) - (1 / (dewPoint + 273.16)));\nvar humidex = temp + 0.5555 * (6.11 * Math.exp(expIndex) - 10);\n\n//Convert to 1-5 scala\nvar integer = parseInt(humidex / 10) - 1;\nif (integer < 0) {\n    integer = 0;\n}\nvar decimal = humidex % 10;\nvar convertedValue = integer + (decimal / 10);\n\nmsg.payload.raw = humidex;\nmsg.payload.type = 'trh';\nmsg.payload.processed = convertedValue;\n\nreturn msg;",
+        "func": "if (msg.payload === null) {\n    return null;\n}\nvar rh = parseFloat(msg.payload.rh) / 100;\nvar temp = parseFloat(msg.payload.temp);\n\nvar dewPoint = Math.pow(rh, 1 / 8) * (112 + 0.9 * temp) + 0.1 * temp - 112;\nvar expIndex = 5417.753 * ((1 / 273.16) - (1 / (dewPoint + 273.16)));\nvar humidex = temp + 0.5555 * (6.11 * Math.exp(expIndex) - 10);\n\n//Convert to 1-5 scala\nvar integer = parseInt(humidex / 10) - 1;\nif (integer < 0) {\n    integer = 0;\n}\nvar decimal = humidex % 10;\nvar convertedValue = integer + (decimal / 10);\n\nmsg.payload.raw = humidex;\nmsg.payload.type = 'trh';\nmsg.payload.processed = convertedValue;\n\nreturn msg;",
         "outputs": "1",
         "noerr": 0,
-        "x": 768,
-        "y": 438,
+        "x": 767,
+        "y": 423,
         "wires": [
             [
-                "f483bc71.75801",
                 "d83bc164.ed444"
             ]
         ]
@@ -141,17 +140,23 @@
         "type": "function",
         "z": "a4031254.d54bd",
         "name": "Raw Values Split",
-        "func": "var rh = parseFloat(msg.payload.humidity);\nvar temp = parseFloat(msg.payload.temperature);\nvar rht = {rh: rh, temp: temp};\nvar mq = parseInt(msg.payload.mq135);\n\nvar mqPayload = {payload: mq};\nvar rhtPayload = {payload: rht};\n\nreturn [mqPayload, rhtPayload];",
-        "outputs": "2",
+        "func": "var rh = msg.payload.humidity;\nvar temp = msg.payload.temperature;\nvar rht = {rh: rh, temp: temp};\nvar mq = msg.payload.mq135;\nvar co2 = msg.payload.co2;\nvar tvoc = msg.payload.tvoc;\n\nvar mqPayload = {payload: mq};\nvar rhtPayload = {payload: rht};\nvar co2Payload = {payload: co2};\nvar tvocPayload = {payload: tvoc};\n\nreturn [mqPayload, rhtPayload, co2Payload, tvocPayload];",
+        "outputs": "4",
         "noerr": 0,
         "x": 521.5,
-        "y": 417,
+        "y": 443,
         "wires": [
             [
                 "7c0bd638.f47248"
             ],
             [
                 "16aa8a81.805e45"
+            ],
+            [
+                "b2677329.46274"
+            ],
+            [
+                "499c80cf.59b5f"
             ]
         ]
     },
@@ -162,7 +167,7 @@
         "name": "",
         "active": false,
         "console": "false",
-        "complete": "false",
+        "complete": "payload",
         "x": 520.5,
         "y": 347,
         "wires": []
@@ -180,18 +185,6 @@
                 "ffc8b9b6.541648"
             ]
         ]
-    },
-    {
-        "id": "f483bc71.75801",
-        "type": "debug",
-        "z": "a4031254.d54bd",
-        "name": "",
-        "active": false,
-        "console": "false",
-        "complete": "payload",
-        "x": 996.5,
-        "y": 453,
-        "wires": []
     },
     {
         "id": "c4e70eb7.50634",
@@ -216,8 +209,8 @@
         "wipe": "1",
         "mode": "pcentneedle",
         "rgb": "rgb",
-        "x": 1499,
-        "y": 429,
+        "x": 1547,
+        "y": 442,
         "wires": []
     },
     {
@@ -228,8 +221,8 @@
         "func": "var green = \"0,7,0,100,0\";\nvar yellow = \"0,7,100,100,0\";\nvar orange = \"0,7,100,60,0\";\nvar red = \"0,7,100,0,0\";\nvar inactive = \"0,7,0,0,0\";\n\nvar curStatus = msg.payload.max;\nvar r = 255;\nvar g = 255;\nvar b = 255;\nvar tmp = 0;\n\nif (curStatus >= 0 && curStatus < 1) {\n    r = 0;\n    b = 0;\n} else if (curStatus < 2) {\n    r *= (curStatus - 1);\n    b = 0;\n} else if (curStatus < 3) {\n    tmp = (curStatus - 2);\n    g -= (g * tmp * 0.4);\n    b = 0;\n} else if (curStatus < 4) {\n    tmp = 1 - (curStatus - 3);\n    g *= (tmp * 0.6);\n    b = 0;\n} else if (curStatus < 5) {\n    g = 0;\n    b = 0;\n} else {\n    r = 0;\n    g = 0;\n    b = 0;\n}\n\nmsg.payload = \"0,7,\"+parseInt(r)+\",\"+parseInt(g)+\",\"+parseInt(b);\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 1268.5,
-        "y": 429,
+        "x": 1316.5,
+        "y": 442,
         "wires": [
             [
                 "a4e3f6a3.1017e8",
@@ -245,8 +238,8 @@
         "active": false,
         "console": "false",
         "complete": "false",
-        "x": 1504.5,
-        "y": 364,
+        "x": 1552.5,
+        "y": 377,
         "wires": []
     },
     {
@@ -257,8 +250,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 1207,
-        "y": 474,
+        "x": 1255,
+        "y": 487,
         "wires": []
     },
     {
@@ -266,11 +259,11 @@
         "type": "function",
         "z": "a4031254.d54bd",
         "name": "Value Join",
-        "func": "var trh = context.get('trh')||0;\nvar mq = context.get('mq')||0;\n\nif (msg.payload.type == 'trh') {\n    trh = msg.payload;\n    delete trh.type;\n    context.set('trh', trh);\n} else if (msg.payload.type == 'mq') {\n    mq = msg.payload;\n    delete mq.type;\n    context.set('mq', mq);\n}\n\nmsg = {};\nmsg.payload = {};\nmsg.payload.trh = trh;\nmsg.payload.mq = mq;\nmsg.payload.max = Math.max(trh.processed, mq.processed);\nif (trh.processed > mq.processed) {\n    msg.payload.type = \"trh\";\n} else {\n    msg.payload.type = \"mq\";\n}\n\nreturn msg;",
+        "func": "var trh = context.get('trh')||0;\nvar mq = context.get('mq')||0;\nvar co2 = context.get('co2')||0;\nvar tvoc = context.get('tvoc')||0;\n\nif (msg.payload.type == 'trh') {\n    trh = msg.payload;\n    delete trh.type;\n    context.set('trh', trh);\n} else if (msg.payload.type == 'mq') {\n    mq = msg.payload;\n    delete mq.type;\n    context.set('mq', mq);\n} else if (msg.payload.type == 'co2') {\n    co2 = msg.payload;\n    delete co2.type;\n    context.set('co2', co2);\n} else if (msg.payload.type == 'tvoc') {\n    tvoc = msg.payload;\n    delete tvoc.type;\n    context.set('tvoc', tvoc);\n}\n\nmsg = {};\nmsg.payload = {};\nmsg.payload.trh = trh;\nmsg.payload.mq = mq;\nmsg.payload.co2 = co2;\nmsg.payload.tvoc = tvoc;\nmsg.payload.max = Math.max(trh.processed, mq.processed, co2.processed, tvoc.processed);\nif (msg.payload.max == trh.processed) {\n    msg.payload.type = \"trh\";\n} else if (msg.payload.max == mq.processed) {\n    msg.payload.type = \"mq\";\n} else if (msg.payload == co2.processed) {\n    msg.payload.type = \"co2\";\n} else {\n    msg.payload.type = \"tvoc\";\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 996.5,
-        "y": 409,
+        "x": 1047.5,
+        "y": 441,
         "wires": [
             [
                 "5ec09ada.d696c4",
@@ -288,8 +281,66 @@
         "qos": "0",
         "retain": "false",
         "broker": "c1cf7c8d.ce2c38",
-        "x": 1239.5,
-        "y": 383,
+        "x": 1287.5,
+        "y": 396,
+        "wires": []
+    },
+    {
+        "id": "b2677329.46274",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "CO2 Analzyer",
+        "func": "if (msg.payload === null) {\n    return null;\n}\nvar co2Val = parseInt(msg.payload);\nvar co2Status = 0;\n\n//Analyzing values\n//Value range 450 - 2000 ppm\nif (co2Val <= 450) {\n    co2Status = (co2Val / 450);\n} else if (co2Val <= 550) {\n    co2Status = 1 + (co2Val / 550);\n} else if (co2Val <= 800) {\n    co2Status = 2 + (co2Val / 800);\n} else if (co2Val <= 1500) {\n    co2Status = 3 + (co2Val / 1500);\n} else {\n    co2Status = 4 + (co2Val / 2000);\n}\n\nmsg.payload = {};\nmsg.payload.raw = co2Val;\nmsg.payload.type = \"co2\";\nmsg.payload.processed = co2Status;\n\nreturn msg;",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 747,
+        "y": 469,
+        "wires": [
+            [
+                "d83bc164.ed444",
+                "18e9b99c.98b016"
+            ]
+        ]
+    },
+    {
+        "id": "499c80cf.59b5f",
+        "type": "function",
+        "z": "a4031254.d54bd",
+        "name": "TVOC Analzyer",
+        "func": "if (msg.payload === null) {\n    return null;\n}\nvar vocVal = msg.payload;\nvar vocStatus = 0;\n\n//Analyzing values\n//Value range 125 - 600 ppb\nif (vocVal <= 125) {\n    vocStatus = (vocVal / 125);\n} else if (vocVal <= 200) {\n    vocStatus = 1 + (vocVal / 200);\n} else if (vocVal <= 300) {\n    vocStatus = 2 + (vocVal / 300);\n} else if (vocVal <= 400) {\n    vocStatus = 3 + (vocVal / 400);\n} else {\n    vocStatus = 4 + (vocVal / 600);\n}\n\nmsg.payload = {};\nmsg.payload.raw = vocVal;\nmsg.payload.type = \"tvoc\";\nmsg.payload.processed = vocStatus;\n\nreturn msg;",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 747,
+        "y": 519,
+        "wires": [
+            [
+                "d83bc164.ed444",
+                "1febff42.b20141"
+            ]
+        ]
+    },
+    {
+        "id": "18e9b99c.98b016",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 990,
+        "y": 506,
+        "wires": []
+    },
+    {
+        "id": "1febff42.b20141",
+        "type": "debug",
+        "z": "a4031254.d54bd",
+        "name": "",
+        "active": true,
+        "console": "false",
+        "complete": "payload",
+        "x": 983,
+        "y": 562,
         "wires": []
     },
     {
