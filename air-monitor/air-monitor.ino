@@ -8,24 +8,21 @@
 
 #include <Adafruit_BME280.h>
 
-#define MQ135_A 23
-
 #define BME_SCK 13
 #define BME_MISO 12
 #define BME_MOSI 11
 #define BME_CS 10
-#define SEALEVELPRESSURE_HPA 1013.25
-
-int mq135_data;
-int counter = 0;
+#define MQ135_A 23
 
 Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
-struct bme280_data {
+
+struct sensor_data {
   float temp;
   float humidity;
   float pressure;
-  float altitude;
-} bme_data;
+  int mq135;
+} sdata;
+int counter = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -45,21 +42,16 @@ void setup() {
 
 void loop() {
   // Read sensor data
-  bme_data.temp = bme.readTemperature();
-  bme_data.humidity = bme.readHumidity();
-  bme_data.pressure = bme.readPressure() / 100.0F;
-  bme_data.altitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
-  mq135_data = analogRead(MQ135_A);
+  sdata.temp = bme.readTemperature();
+  sdata.humidity = bme.readHumidity();
+  sdata.pressure = bme.readPressure() / 100.0F;
+  sdata.mq135 = analogRead(MQ135_A);
 
-  // Readable
-  //Serial.printf(
-  //    "%4.2f *C, %5.3f %%RH, %7.2f hPA, %6.2f m, %4d mq\n\r",
-  //    bme_data.temp, bme_data.humidity, bme_data.pressure, bme_data.altitude, mq135_data);
-
-  // CSV
+  // Print sensor data
   Serial.printf(
-      "%05d,%04.2f,%05.3f,%07.2f,%06.2f,%04d\n\r",
-      counter++%2048, bme_data.temp, bme_data.humidity, bme_data.pressure, bme_data.altitude, mq135_data);
+      "counter=%05d,temperature=%04.2f,humidity=%05.3f,pressure=%07.2f,mq135=%04d\n\r",
+      counter++, sdata.temp, sdata.humidity, sdata.pressure, sdata.mq135);
 
+  // Refresh interval
   delay(100);
 }
