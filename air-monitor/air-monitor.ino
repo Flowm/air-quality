@@ -1,12 +1,14 @@
 /*
  * Simple air quality monitor
  *
- * Using the BME280 (temperature, humidity, pressure) and MQ135 (gas) sensors
- * for measurement and a Teensy 3.2 to read and print the data over USB serial.
+ * Using the BME280 (temperature, humidity, pressure), MQ135 (gas) and iAQ-core
+ * (CO2, TVOC) sensors for measurement and a Teensy 3.2 to read and print the
+ * data over USB serial.
  *
  */
 
 #include <Adafruit_BME280.h>
+#include "ams_iaq.h"
 
 #define BME_SCK 13
 #define BME_MISO 12
@@ -15,6 +17,7 @@
 #define MQ135_A 23
 
 Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
+Iaq iaq;
 
 struct sensor_data {
   float temp;
@@ -22,10 +25,12 @@ struct sensor_data {
   float pressure;
   int mq135;
 } sdata;
+
 int counter = 0;
 
 void setup() {
   Serial.begin(115200);
+  delay(2000);
 
   // Setup BME280
   Serial.println("BME280 init");
@@ -46,11 +51,18 @@ void loop() {
   sdata.humidity = bme.readHumidity();
   sdata.pressure = bme.readPressure() / 100.0F;
   sdata.mq135 = analogRead(MQ135_A);
+  iaq.read();
 
   // Print sensor data
   Serial.printf(
-      "counter=%05d,temperature=%04.2f,humidity=%05.3f,pressure=%07.2f,mq135=%04d\n\r",
-      counter++, sdata.temp, sdata.humidity, sdata.pressure, sdata.mq135);
+      "counter=%05d,"
+      "temperature=%04.2f,humidity=%05.3f,pressure=%07.2f,mq135=%04d,"
+      "iaqs=%02d,co2=%05d,tvoc=%05d"
+      "\n\r",
+      counter++,
+      sdata.temp, sdata.humidity, sdata.pressure, sdata.mq135,
+      iaq.status, iaq.predict, iaq.tvoc
+    );
 
   // Refresh interval
   delay(100);
