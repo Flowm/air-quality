@@ -280,7 +280,7 @@
         "type": "function",
         "z": "701a779f.211a18",
         "name": "Filter",
-        "func": "var json = msg.payload;\n\n//Hardcoded invalid values, meaning the sensors are currently disabled\nif (\"temperature\" in json && \"pressure\" in json && \"humidity\" in json) {\n    //First case: bme280 not connected\n    //Seconds case: bme280 init failed\n    if ((json.temperature == 187.29 && json.pressure == -104.50 && json.humidity == 100.00) || (json.temperature == 23.78 && json.pressure == 754.50 && json.humidity == 65.886)) {\n        delete json.temperature;\n        delete json.pressure;\n        delete json.humidity;\n    }\n}\n\nif (json.mq135 == 1023) {\n    delete json.mq135;\n}\n\nmsg.payload = json;\nreturn msg;\n",
+        "func": "var json = msg.payload;\n\n//Hardcoded invalid values, meaning the sensors are currently disabled\nif (\"temperature\" in json && \"pressure\" in json && \"humidity\" in json) {\n    //First case: bme280 not connected\n    //Seconds case: bme280 init failed\n    if ((json.temperature == 187.29 && json.pressure == -104.50 && json.humidity == 100.00) || (json.temperature == 23.78 && json.pressure == 754.50 && json.humidity == 65.886)) {\n        delete json.temperature;\n        delete json.pressure;\n        delete json.humidity;\n    }\n}\n\nif (json.mq135 == 1023) {\n    //MQ135 is currently warming up or disabled\n    delete json.mq135;\n}\n\nif (json.iaqs !== 0) {\n    delete json.iaqs;\n    delete json.tvoc;\n    delete json.co2;\n}\n\nmsg.payload = json;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 551.5,
