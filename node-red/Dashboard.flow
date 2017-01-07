@@ -1,0 +1,464 @@
+[
+    {
+        "id": "1cf74b1b.bdb1ed",
+        "type": "tab",
+        "label": "Dashboard"
+    },
+    {
+        "id": "b611ab4a.c7c3e8",
+        "type": "mqtt in",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "topic": "aq-processed",
+        "qos": "0",
+        "broker": "c1cf7c8d.ce2c38",
+        "x": 122,
+        "y": 181,
+        "wires": [
+            [
+                "cc1de3b.91b2ea"
+            ]
+        ]
+    },
+    {
+        "id": "c3d8471.e680b38",
+        "type": "mqtt in",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "Sensor values",
+        "topic": "aq-raw",
+        "qos": "0",
+        "broker": "c1cf7c8d.ce2c38",
+        "x": 118,
+        "y": 467,
+        "wires": [
+            [
+                "af15e65d.9c9d48"
+            ]
+        ]
+    },
+    {
+        "id": "6d8dfb63.733b34",
+        "type": "debug",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 639.5,
+        "y": 125,
+        "wires": []
+    },
+    {
+        "id": "9683e0e.71cd9a",
+        "type": "ui_gauge",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "group": "4cc550be.abd42",
+        "order": 0,
+        "width": "10",
+        "height": "3",
+        "gtype": "gage",
+        "title": "",
+        "label": "",
+        "format": "{{value | number:2}}",
+        "min": 0,
+        "max": "5",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "x": 822.5,
+        "y": 183,
+        "wires": []
+    },
+    {
+        "id": "e249f677.d1cdb",
+        "type": "json",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "x": 464,
+        "y": 181,
+        "wires": [
+            [
+                "54f07d17.4842ec",
+                "6d8dfb63.733b34",
+                "6767712d.ad5ae8"
+            ]
+        ]
+    },
+    {
+        "id": "54f07d17.4842ec",
+        "type": "function",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "AirQualityStats",
+        "func": "msg.payload = msg.payload.max;\nmsg.enabled = false;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 652.5,
+        "y": 183,
+        "wires": [
+            [
+                "9683e0e.71cd9a",
+                "ae352372.1f3c"
+            ]
+        ]
+    },
+    {
+        "id": "ae352372.1f3c",
+        "type": "debug",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 840.5,
+        "y": 144,
+        "wires": []
+    },
+    {
+        "id": "6767712d.ad5ae8",
+        "type": "function",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "Processed",
+        "func": "var msgs = [];\nfor (var key in msg.payload) {\n    if (typeof(msg.payload[key]) === 'object' && \"processed\" in msg.payload[key]) {\n        var newmsg = {};\n        newmsg.payload = msg.payload[key].processed;\n        newmsg.topic = key\n        msgs.push(newmsg);\n    }\n}\n\nreturn [msgs];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 645,
+        "y": 233,
+        "wires": [
+            [
+                "68f4db75.56a79c",
+                "f02ff3fe.ede56"
+            ]
+        ]
+    },
+    {
+        "id": "68f4db75.56a79c",
+        "type": "ui_chart",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "group": "4cc550be.abd42",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "label": "chart",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "ymin": "0",
+        "ymax": "5",
+        "removeOlder": "1",
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "60",
+        "cutout": 0,
+        "x": 826,
+        "y": 234,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "f02ff3fe.ede56",
+        "type": "debug",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 825.5,
+        "y": 273,
+        "wires": []
+    },
+    {
+        "id": "6e2a60b.1b08d2",
+        "type": "json",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "x": 464,
+        "y": 467,
+        "wires": [
+            [
+                "cb4f96be.e2b1d8",
+                "6d388ae.8501a74",
+                "ae149e1f.90f2a8"
+            ]
+        ]
+    },
+    {
+        "id": "cc1de3b.91b2ea",
+        "type": "delay",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 313.5,
+        "y": 181,
+        "wires": [
+            [
+                "e249f677.d1cdb"
+            ]
+        ]
+    },
+    {
+        "id": "cb4f96be.e2b1d8",
+        "type": "debug",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 631.5,
+        "y": 377,
+        "wires": []
+    },
+    {
+        "id": "af15e65d.9c9d48",
+        "type": "delay",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "2",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 308,
+        "y": 467,
+        "wires": [
+            [
+                "6e2a60b.1b08d2"
+            ]
+        ]
+    },
+    {
+        "id": "6d388ae.8501a74",
+        "type": "function",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "TempHumPres",
+        "func": "var msgs = [];\nvar payload = msg.payload;\n\naddMsg(\"temperature\");\naddMsg(\"humidity\");\naddMsg(\"pressure\");\n\nreturn msgs;\n\n\nfunction addMsg(key) {\n    if (key in msg.payload) {\n        var newmsg = {};\n        newmsg.topic = key;\n        newmsg.payload = msg.payload[key];\n        msgs.push(newmsg);\n    }\n}",
+        "outputs": "3",
+        "noerr": 0,
+        "x": 643,
+        "y": 466,
+        "wires": [
+            [
+                "5c65ebd2.a76ce4"
+            ],
+            [
+                "d12e30d7.30893",
+                "df77c8e8.20d518"
+            ],
+            [
+                "4d0716e0.5bc7a8"
+            ]
+        ]
+    },
+    {
+        "id": "df77c8e8.20d518",
+        "type": "debug",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 841,
+        "y": 369,
+        "wires": []
+    },
+    {
+        "id": "5c65ebd2.a76ce4",
+        "type": "ui_chart",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "Temperature",
+        "group": "7950bdbf.f4d24c",
+        "order": 0,
+        "width": "10",
+        "height": "5",
+        "label": "Temperature",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "ymin": "0",
+        "ymax": "40",
+        "removeOlder": 1,
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "x": 863.5,
+        "y": 419,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "d12e30d7.30893",
+        "type": "ui_chart",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "Humidity",
+        "group": "7950bdbf.f4d24c",
+        "order": 0,
+        "width": "10",
+        "height": "5",
+        "label": "Humidity",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "x": 853,
+        "y": 464,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "4d0716e0.5bc7a8",
+        "type": "ui_chart",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "Pressure",
+        "group": "7950bdbf.f4d24c",
+        "order": 0,
+        "width": "10",
+        "height": "5",
+        "label": "Pressure",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "ymin": "600",
+        "ymax": "1400",
+        "removeOlder": 1,
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "x": 854,
+        "y": 512,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "ae149e1f.90f2a8",
+        "type": "function",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "AQ",
+        "func": "var msgs = [];\nvar payload = msg.payload;\n\naddMsg(\"mq135\");\naddMsg(\"co2\");\naddMsg(\"tvoc\");\n\nreturn [msgs];\n\n\nfunction addMsg(key) {\n    if (key in msg.payload) {\n        var newmsg = {};\n        newmsg.topic = key;\n        newmsg.payload = msg.payload[key];\n        msgs.push(newmsg);\n    }\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 614,
+        "y": 572,
+        "wires": [
+            [
+                "26fe2668.7e7c92"
+            ]
+        ]
+    },
+    {
+        "id": "26fe2668.7e7c92",
+        "type": "ui_chart",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "AQ",
+        "group": "aaa4bad0.887e08",
+        "order": 0,
+        "width": "10",
+        "height": "8",
+        "label": "AQ",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "ymin": "0",
+        "ymax": "2000",
+        "removeOlder": 1,
+        "removeOlderPoints": "100",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "x": 849,
+        "y": 573,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "c1cf7c8d.ce2c38",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    },
+    {
+        "id": "4cc550be.abd42",
+        "type": "ui_group",
+        "z": "",
+        "name": "Current Air Quality",
+        "tab": "cca8d37e.a1fb18",
+        "disp": true,
+        "width": "10"
+    },
+    {
+        "id": "7950bdbf.f4d24c",
+        "type": "ui_group",
+        "z": "",
+        "name": "Sensors1",
+        "tab": "cca8d37e.a1fb18",
+        "disp": true,
+        "width": "10"
+    },
+    {
+        "id": "aaa4bad0.887e08",
+        "type": "ui_group",
+        "z": "",
+        "name": "Sensors2",
+        "tab": "cca8d37e.a1fb18",
+        "disp": true,
+        "width": "10"
+    },
+    {
+        "id": "cca8d37e.a1fb18",
+        "type": "ui_tab",
+        "z": "",
+        "name": "Home",
+        "icon": "dashboard"
+    }
+]
