@@ -1,5 +1,10 @@
 [
     {
+        "id": "701a779f.211a18",
+        "type": "tab",
+        "label": "SensorInput"
+    },
+    {
         "id": "6df25c63.240e34",
         "type": "serial in",
         "z": "701a779f.211a18",
@@ -116,7 +121,7 @@
         "type": "debug",
         "z": "701a779f.211a18",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "false",
         "x": 946.5,
@@ -161,7 +166,7 @@
         "type": "debug",
         "z": "701a779f.211a18",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "false",
         "x": 703,
@@ -255,7 +260,7 @@
         "type": "debug",
         "z": "701a779f.211a18",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "false",
         "x": 702,
@@ -280,7 +285,7 @@
         "type": "function",
         "z": "701a779f.211a18",
         "name": "Filter",
-        "func": "var json = msg.payload;\n\n//Hardcoded invalid values, meaning the sensors are currently disabled\nif (\"temperature\" in json && \"pressure\" in json && \"humidity\" in json) {\n    //First case: bme280 not connected\n    //Seconds case: bme280 init failed\n    if ((json.temperature == 187.29 && json.pressure == -104.50 && json.humidity == 100.00) || (json.temperature == 23.78 && json.pressure == 754.50 && json.humidity == 65.886)) {\n        delete json.temperature;\n        delete json.pressure;\n        delete json.humidity;\n    }\n}\n\nif (json.mq135 == 1023) {\n    //MQ135 is currently warming up or disabled\n    delete json.mq135;\n}\n\nif (json.iaqs !== 0) {\n    delete json.iaqs;\n    delete json.tvoc;\n    delete json.co2;\n}\n\nmsg.payload = json;\nreturn msg;\n",
+        "func": "var json = msg.payload;\n\n//Hardcoded invalid values, meaning the sensors are currently disabled\nif (\"temperature\" in json && \"pressure\" in json && \"humidity\" in json) {\n    //First case: bme280 not connected\n    //Seconds case: bme280 init failed\n    if ((parseInt(json.temperature) == 187.29 && parseInt(json.pressure) == -104.50 && parseInt(json.humidity) == 100.00) || (parseInt(json.temperature) == 23.78 && parseInt(json.pressure) == 754.50 && parseInt(json.humidity) == 65.886)) {\n        delete json.temperature;\n        delete json.pressure;\n        delete json.humidity;\n    }\n}\n\nif (\"mq135\" in json && parseInt(json.mq135) == 1023) {\n    delete json.mq135;\n}\n\nif (\"iaqs\" in json && parseInt(json.iaqs) !== 0) {\n    delete json.iaqs;\n    delete json.co2;\n    delete json.tvoc;\n}\n\nmsg.payload = json;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "x": 551.5,
