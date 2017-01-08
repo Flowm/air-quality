@@ -1,10 +1,5 @@
 [
     {
-        "id": "1cf74b1b.bdb1ed",
-        "type": "tab",
-        "label": "Dashboard"
-    },
-    {
         "id": "b611ab4a.c7c3e8",
         "type": "mqtt in",
         "z": "1cf74b1b.bdb1ed",
@@ -43,8 +38,8 @@
         "name": "",
         "active": false,
         "console": "false",
-        "complete": "payload",
-        "x": 639.5,
+        "complete": "true",
+        "x": 619.5,
         "y": 125,
         "wires": []
     },
@@ -82,8 +77,9 @@
         "wires": [
             [
                 "54f07d17.4842ec",
+                "6767712d.ad5ae8",
                 "6d8dfb63.733b34",
-                "6767712d.ad5ae8"
+                "336300cd.406c5"
             ]
         ]
     },
@@ -265,7 +261,7 @@
                 "df77c8e8.20d518"
             ],
             [
-                "4d0716e0.5bc7a8"
+                "f3254e9b.3907f"
             ]
         ]
     },
@@ -292,7 +288,7 @@
         "height": "5",
         "label": "Temperature",
         "chartType": "line",
-        "legend": "false",
+        "legend": "true",
         "xformat": "HH:mm:ss",
         "interpolate": "linear",
         "nodata": "",
@@ -332,34 +328,6 @@
         "cutout": 0,
         "x": 853,
         "y": 464,
-        "wires": [
-            [],
-            []
-        ]
-    },
-    {
-        "id": "4d0716e0.5bc7a8",
-        "type": "ui_chart",
-        "z": "1cf74b1b.bdb1ed",
-        "name": "Pressure",
-        "group": "7950bdbf.f4d24c",
-        "order": 0,
-        "width": "10",
-        "height": "5",
-        "label": "Pressure",
-        "chartType": "line",
-        "legend": "false",
-        "xformat": "HH:mm:ss",
-        "interpolate": "linear",
-        "nodata": "",
-        "ymin": "600",
-        "ymax": "1400",
-        "removeOlder": 1,
-        "removeOlderPoints": "100",
-        "removeOlderUnit": "3600",
-        "cutout": 0,
-        "x": 854,
-        "y": 512,
         "wires": [
             [],
             []
@@ -410,6 +378,38 @@
         ]
     },
     {
+        "id": "f3254e9b.3907f",
+        "type": "ui_text",
+        "z": "1cf74b1b.bdb1ed",
+        "group": "7950bdbf.f4d24c",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Pressure",
+        "format": "{{msg.payload | number:2}}",
+        "layout": "row-left",
+        "x": 849.5,
+        "y": 511,
+        "wires": []
+    },
+    {
+        "id": "336300cd.406c5",
+        "type": "function",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "TRH",
+        "func": "var trh = msg.payload.trh;\n\nmsg = {};\nmsg.topic = 'perceived';\nmsg.payload = trh.raw;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 624.5,
+        "y": 280,
+        "wires": [
+            [
+                "5c65ebd2.a76ce4"
+            ]
+        ]
+    },
+    {
         "id": "c1cf7c8d.ce2c38",
         "type": "mqtt-broker",
         "z": "",
@@ -440,7 +440,7 @@
         "id": "7950bdbf.f4d24c",
         "type": "ui_group",
         "z": "",
-        "name": "Sensors1",
+        "name": "Climate",
         "tab": "cca8d37e.a1fb18",
         "disp": true,
         "width": "10"
@@ -449,7 +449,7 @@
         "id": "aaa4bad0.887e08",
         "type": "ui_group",
         "z": "",
-        "name": "Sensors2",
+        "name": "Gas",
         "tab": "cca8d37e.a1fb18",
         "disp": true,
         "width": "10"
