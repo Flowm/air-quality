@@ -68,8 +68,8 @@
             "#e6e600",
             "#ca3838"
         ],
-        "x": 824.4999847412109,
-        "y": 135,
+        "x": 969.4999847412109,
+        "y": 134,
         "wires": []
     },
     {
@@ -116,8 +116,8 @@
         "active": false,
         "console": "false",
         "complete": "false",
-        "x": 842.4999847412109,
-        "y": 96,
+        "x": 989.4999847412109,
+        "y": 89,
         "wires": []
     },
     {
@@ -125,15 +125,14 @@
         "type": "function",
         "z": "1cf74b1b.bdb1ed",
         "name": "Processed",
-        "func": "var msgs = [];\nfor (var key in msg.payload) {\n    if (typeof(msg.payload[key]) === 'object' && \"processed\" in msg.payload[key]) {\n        var newmsg = {};\n        newmsg.payload = msg.payload[key].processed;\n        newmsg.topic = key\n        msgs.push(newmsg);\n    }\n}\n\nreturn [msgs];",
+        "func": "var msgs = [];\nfor (var key in msg.payload) {\n    if (typeof(msg.payload[key]) === 'object' && \"processed\" in msg.payload[key]) {\n        var newmsg = {};\n        newmsg.payload = msg.payload[key].processed;\n        newmsg.topic = key\n        msgs.push(newmsg);\n    }\n}\n\nmsg.payload = msgs;\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "x": 645,
         "y": 233,
         "wires": [
             [
-                "68f4db75.56a79c",
-                "f02ff3fe.ede56"
+                "3997464e.37de7a"
             ]
         ]
     },
@@ -158,24 +157,12 @@
         "removeOlderPoints": "100",
         "removeOlderUnit": "60",
         "cutout": 0,
-        "x": 826,
-        "y": 234,
+        "x": 968.9999847412109,
+        "y": 233,
         "wires": [
             [],
             []
         ]
-    },
-    {
-        "id": "f02ff3fe.ede56",
-        "type": "debug",
-        "z": "1cf74b1b.bdb1ed",
-        "name": "",
-        "active": false,
-        "console": "false",
-        "complete": "true",
-        "x": 825.5,
-        "y": 273,
-        "wires": []
     },
     {
         "id": "6e2a60b.1b08d2",
@@ -281,8 +268,8 @@
         "active": false,
         "console": "false",
         "complete": "true",
-        "x": 841,
-        "y": 369,
+        "x": 967.9999847412109,
+        "y": 368,
         "wires": []
     },
     {
@@ -306,8 +293,8 @@
         "removeOlderPoints": "100",
         "removeOlderUnit": "3600",
         "cutout": 0,
-        "x": 863.5,
-        "y": 419,
+        "x": 990.4999847412109,
+        "y": 418,
         "wires": [
             [],
             []
@@ -334,8 +321,8 @@
         "removeOlderPoints": "100",
         "removeOlderUnit": "3600",
         "cutout": 0,
-        "x": 853,
-        "y": 464,
+        "x": 979.9999847412109,
+        "y": 463,
         "wires": [
             [],
             []
@@ -346,14 +333,14 @@
         "type": "function",
         "z": "1cf74b1b.bdb1ed",
         "name": "AQ",
-        "func": "var msgs = [];\nvar payload = msg.payload;\n\naddMsg(\"mq135\");\naddMsg(\"co2\");\naddMsg(\"tvoc\");\n\nreturn [msgs];\n\n\nfunction addMsg(key) {\n    if (key in msg.payload) {\n        var newmsg = {};\n        newmsg.topic = key;\n        newmsg.payload = msg.payload[key];\n        msgs.push(newmsg);\n    }\n}",
+        "func": "var msgs = [];\nvar payload = msg.payload;\n\naddMsg(\"mq135\");\naddMsg(\"co2\");\naddMsg(\"tvoc\");\n\nmsg.payload = msgs;\nreturn msg;\n\n\nfunction addMsg(key) {\n    if (key in msg.payload) {\n        var newmsg = {};\n        newmsg.topic = key;\n        newmsg.payload = msg.payload[key];\n        msgs.push(newmsg);\n    }\n}",
         "outputs": "1",
         "noerr": 0,
         "x": 614,
         "y": 572,
         "wires": [
             [
-                "26fe2668.7e7c92"
+                "a6342432.6d7738"
             ]
         ]
     },
@@ -378,8 +365,8 @@
         "removeOlderPoints": "100",
         "removeOlderUnit": "3600",
         "cutout": 0,
-        "x": 849,
-        "y": 573,
+        "x": 963.9999847412109,
+        "y": 572.0000305175781,
         "wires": [
             [],
             []
@@ -397,8 +384,8 @@
         "label": "Pressure",
         "format": "{{msg.payload | number:2}}",
         "layout": "row-left",
-        "x": 849.5,
-        "y": 511,
+        "x": 976.4999847412109,
+        "y": 510,
         "wires": []
     },
     {
@@ -429,8 +416,66 @@
         "label": "Highest Value",
         "format": "{{msg.payload}}",
         "layout": "row-center",
-        "x": 851.8957977294922,
-        "y": 182.88888549804688,
+        "x": 997.8957977294922,
+        "y": 177.88888549804688,
+        "wires": []
+    },
+    {
+        "id": "3997464e.37de7a",
+        "type": "function",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "Sort",
+        "func": "var sortIndexes = {'mq':0,'co2':1,'tvoc':2,'trh':3};\n\nvar values = msg.payload;\n\nvalues.sort(function(a, b) {\n    return sortIndexes[a.topic] - sortIndexes[b.topic];\n});\n\n\nreturn [values];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 818.2743988037109,
+        "y": 232.15628051757812,
+        "wires": [
+            [
+                "68f4db75.56a79c",
+                "c00f3ac7.1c45b8"
+            ]
+        ]
+    },
+    {
+        "id": "a6342432.6d7738",
+        "type": "function",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "Sort",
+        "func": "var sortIndexes = {'mq135':0,'co2':1,'tvoc':2,'trh':3};\n\nvar values = msg.payload;\n\nvalues.sort(function(a, b) {\n    return sortIndexes[a.topic] - sortIndexes[b.topic];\n});\n\n\nreturn [values];",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 781.8957977294922,
+        "y": 570.8889465332031,
+        "wires": [
+            [
+                "26fe2668.7e7c92",
+                "c6f272ba.ebcd4"
+            ]
+        ]
+    },
+    {
+        "id": "c6f272ba.ebcd4",
+        "type": "debug",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 960.8958129882812,
+        "y": 619.888916015625,
+        "wires": []
+    },
+    {
+        "id": "c00f3ac7.1c45b8",
+        "type": "debug",
+        "z": "1cf74b1b.bdb1ed",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 968.8958587646484,
+        "y": 280.8888854980469,
         "wires": []
     },
     {
