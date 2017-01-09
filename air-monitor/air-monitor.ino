@@ -1,9 +1,12 @@
 /*
- * Simple air quality monitor
+ * Simple air quality monitor node
  *
- * Using the BME280 (temperature, humidity, pressure), MQ135 (gas) and iAQ-core
- * (CO2, TVOC) sensors for measurement and a Teensy 3.2 to read and print the
- * data over USB serial.
+ * Using the following sensors:
+ * - BME280 (temperature, humidity, pressure)
+ * - MQ135 (gas)
+ * - iAQ-core (CO2, TVOC)
+ * Data is read periodically by a Teensy 3.2 and then printed over serial
+ * console to USB and HM-11 BLE module.
  *
  */
 
@@ -26,10 +29,13 @@ struct sensor_data {
   int mq135;
 } sdata;
 
+#define BUFSZ 1024
+char buf[BUFSZ];
 int counter = 0;
 
 void setup() {
   Serial.begin(115200);
+  Serial1.begin(9600);
   delay(2000);
 
   // Setup BME280
@@ -53,16 +59,33 @@ void loop() {
   sdata.mq135 = analogRead(MQ135_A);
   iaq.read();
 
-  // Print sensor data
-  Serial.printf(
+  // Prepare sensor data
+  int sum = 0;
+  int len = snprintf(buf, BUFSZ,
       "counter=%05d,"
       "temperature=%04.2f,humidity=%05.3f,pressure=%07.2f,mq135=%04d,"
-      "iaqs=%02d,co2=%05d,tvoc=%05d"
-      "\n\r",
+      "iaqs=%02d,co2=%05d,tvoc=%05d",
       counter++,
       sdata.temp, sdata.humidity, sdata.pressure, sdata.mq135,
       iaq.status, iaq.predict, iaq.tvoc
-    );
+  );
+
+  // Calculate checksum for transmission
+  for (int i=0; i<len; i++) {
+    sum += buf[i]*i;
+  }
+  sum = 0xFF & sum;
+  if (len+11 < BUFSZ) {
+    snprintf(buf+len, BUFSZ-len,
+        ",chk=%03d"
+        "\n\r",
+        sum
+      );
+  }
+
+  // Print sensor data
+  Serial.print(buf);
+  Serial1.print(buf);
 
   // Refresh interval
   delay(100);
