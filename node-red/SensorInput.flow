@@ -10,12 +10,12 @@
         "z": "701a779f.211a18",
         "name": "Sensors",
         "serial": "b4141b9a.c8349",
-        "x": 155,
-        "y": 347,
+        "x": 121,
+        "y": 348,
         "wires": [
             [
-                "6db6059f.c4e974",
-                "1b0ea87d.7d3558"
+                "1b0ea87d.7d3558",
+                "57d13f70.59233"
             ]
         ]
     },
@@ -25,8 +25,8 @@
         "z": "701a779f.211a18",
         "mydb": "80bcdc23.753798",
         "name": "SensorDB",
-        "x": 1171,
-        "y": 267,
+        "x": 1314.999984741211,
+        "y": 270,
         "wires": [
             [
                 "87f84797.96f308"
@@ -44,8 +44,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 924.5,
-        "y": 226,
+        "x": 1068.499984741211,
+        "y": 229,
         "wires": [
             [
                 "4eb94ecb.d5ae"
@@ -63,8 +63,8 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 918.5,
-        "y": 174,
+        "x": 1062.499984741211,
+        "y": 177,
         "wires": [
             [
                 "4eb94ecb.d5ae"
@@ -79,8 +79,8 @@
         "active": false,
         "console": "false",
         "complete": "payload",
-        "x": 1364,
-        "y": 267,
+        "x": 1507.999984741211,
+        "y": 270,
         "wires": []
     },
     {
@@ -91,8 +91,8 @@
         "func": "var data = msg.payload;\n\nmsg.topic = \"INSERT INTO sensors (temperature, humidity, pressure, mq135) VALUES (?,?,?,?)\";\nmsg.payload = [data.temperature, data.humidity, data.pressure, data.mq135];\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 948.5,
-        "y": 316,
+        "x": 1092.499984741211,
+        "y": 319,
         "wires": [
             [
                 "a39fcf7.cfba4b",
@@ -105,11 +105,11 @@
         "type": "function",
         "z": "701a779f.211a18",
         "name": "Sensors to JSON",
-        "func": "var sensors = msg.payload.replace(/\\n|\\r/g,\"\").split(\",\");\n\nvar json = {};\nfor (i=0; i<sensors.length; i++) {\n\tvar fields = sensors[i].split(\"=\");\n\tif (fields[1] !== \"\") {\n\t    json[fields[0]] = fields[1];   \n\t}\n}\n\nmsg.payload = json;\n\nreturn msg;",
+        "func": "var sensors = msg.payload.split(\",\");\n\nvar json = {};\nfor (i=0; i<sensors.length; i++) {\n\tvar fields = sensors[i].split(\"=\");\n\tif (fields[1] !== \"\") {\n\t    json[fields[0]] = fields[1];   \n\t}\n}\n\nmsg.payload = json;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 363.5,
-        "y": 347,
+        "x": 520.4999542236328,
+        "y": 349,
         "wires": [
             [
                 "4fd6db01.19ced4"
@@ -124,8 +124,8 @@
         "active": false,
         "console": "false",
         "complete": "false",
-        "x": 946.5,
-        "y": 455,
+        "x": 1090.499984741211,
+        "y": 458,
         "wires": []
     },
     {
@@ -181,8 +181,8 @@
         "active": false,
         "console": "false",
         "complete": "false",
-        "x": 1175,
-        "y": 337,
+        "x": 1318.999984741211,
+        "y": 340,
         "wires": []
     },
     {
@@ -193,8 +193,8 @@
         "active": false,
         "console": "false",
         "complete": "false",
-        "x": 362,
-        "y": 287,
+        "x": 320.99998474121094,
+        "y": 295,
         "wires": []
     },
     {
@@ -212,8 +212,8 @@
         "randomLast": "5",
         "randomUnits": "seconds",
         "drop": true,
-        "x": 731.5,
-        "y": 347,
+        "x": 875.4999847412109,
+        "y": 350,
         "wires": [
             [
                 "6fded24.2b96c2c",
@@ -276,8 +276,8 @@
         "qos": "0",
         "retain": "false",
         "broker": "c1cf7c8d.ce2c38",
-        "x": 1008.5,
-        "y": 391,
+        "x": 1152.499984741211,
+        "y": 394,
         "wires": []
     },
     {
@@ -288,13 +288,42 @@
         "func": "var json = msg.payload;\n\n//Hardcoded invalid values, meaning the sensors are currently disabled\nif (\"temperature\" in json && \"pressure\" in json && \"humidity\" in json) {\n    //First case: bme280 not connected\n    //Seconds case: bme280 init failed\n    if ((parseInt(json.temperature) == 187.29 && parseInt(json.pressure) == -104.50 && parseInt(json.humidity) == 100.00) || (parseInt(json.temperature) == 23.78 && parseInt(json.pressure) == 754.50 && parseInt(json.humidity) == 65.886)) {\n        delete json.temperature;\n        delete json.pressure;\n        delete json.humidity;\n    }\n}\n\nif (\"mq135\" in json && parseInt(json.mq135) == 1023) {\n    delete json.mq135;\n}\n\nif (\"iaqs\" in json && parseInt(json.iaqs) !== 0) {\n    delete json.iaqs;\n    delete json.co2;\n    delete json.tvoc;\n}\n\nmsg.payload = json;\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
-        "x": 551.5,
-        "y": 347,
+        "x": 695.4999847412109,
+        "y": 350,
         "wires": [
             [
                 "8a4b8f7c.44ba08"
             ]
         ]
+    },
+    {
+        "id": "57d13f70.59233",
+        "type": "function",
+        "z": "701a779f.211a18",
+        "name": "Checksum",
+        "func": "function checksum(str, chk) {\n    sum = 0;\n    for (var i = 0; i < str.length; i++) {\n        var chr = str.charCodeAt(i);\n        sum += (chr * i);\n    }\n    sum = 0xFF & sum;\n    return chk == sum;\n}\n\nvar cleanString = msg.payload.replace(/\\n|\\r/g,\"\");\nvar tmp = cleanString.split(\",chk=\");\nvar check = (tmp.length == 2) ? tmp[1] : null;\nif (check === null) {\n    return null;\n}\n\nvar cleanPayload = tmp[0];\n//Performing checksum\nif (!checksum(cleanPayload, parseInt(check))) {\n    return null;\n}\n\nmsg.payload = cleanPayload;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 311.4964904785156,
+        "y": 348.1632080078125,
+        "wires": [
+            [
+                "6db6059f.c4e974",
+                "5e0c8122.05af6"
+            ]
+        ]
+    },
+    {
+        "id": "5e0c8122.05af6",
+        "type": "debug",
+        "z": "701a779f.211a18",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 528.8957977294922,
+        "y": 291.8888854980469,
+        "wires": []
     },
     {
         "id": "b4141b9a.c8349",
