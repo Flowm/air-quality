@@ -1,0 +1,98 @@
+[
+    {
+        "id": "6fc1818e.5032a",
+        "type": "tab",
+        "label": "AmbientControl"
+    },
+    {
+        "id": "9e9e817f.33232",
+        "type": "rpi-neopixels",
+        "z": "6fc1818e.5032a",
+        "name": "",
+        "pixels": "8",
+        "bgnd": "0,7,0,0,0",
+        "fgnd": "",
+        "wipe": "1",
+        "mode": "pcentneedle",
+        "rgb": "rgb",
+        "x": 765.8958129882812,
+        "y": 343.8888854980469,
+        "wires": []
+    },
+    {
+        "id": "bf755db.ee1e4a",
+        "type": "debug",
+        "z": "6fc1818e.5032a",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "false",
+        "x": 748.3958129882812,
+        "y": 279.8888854980469,
+        "wires": []
+    },
+    {
+        "id": "688fba07.744384",
+        "type": "function",
+        "z": "6fc1818e.5032a",
+        "name": "Ambient Light Controller",
+        "func": "// var green = \"0,7,0,100,0\";\n// var yellow = \"0,7,100,100,0\";\n// var orange = \"0,7,100,60,0\";\n// var red = \"0,7,100,0,0\";\n// var inactive = \"0,7,0,0,0\";\n\nvar intensity = 0.2\n\nvar curStatus = msg.payload.max;\nvar r = Math.floor(255 * intensity);\nvar g = Math.floor(255 * intensity);\nvar b = Math.floor(255 * intensity);\nvar tmp = 0;\n\nif (curStatus >= 0 && curStatus < 1) {\n    r = 0;\n    b = 0;\n} else if (curStatus < 2) {\n    r *= (curStatus - 1);\n    b = 0;\n} else if (curStatus < 3) {\n    tmp = (curStatus - 2);\n    g -= (g * tmp * 0.4);\n    b = 0;\n} else if (curStatus < 4) {\n    tmp = 1 - (curStatus - 3);\n    g *= (tmp * 0.6);\n    b = 0;\n} else if (curStatus < 5) {\n    g = 0;\n    b = 0;\n} else {\n    r = 0;\n    g = 0;\n    b = 0;\n}\n\nmsg.payload = \"0,7,\"+parseInt(r)+\",\"+parseInt(g)+\",\"+parseInt(b);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 512.3958129882812,
+        "y": 344.8888854980469,
+        "wires": [
+            [
+                "9e9e817f.33232",
+                "bf755db.ee1e4a"
+            ]
+        ]
+    },
+    {
+        "id": "86d7ec4f.41372",
+        "type": "mqtt in",
+        "z": "6fc1818e.5032a",
+        "name": "",
+        "topic": "aq-processed",
+        "qos": "0",
+        "broker": "c1cf7c8d.ce2c38",
+        "x": 126.89581298828125,
+        "y": 345.8888854980469,
+        "wires": [
+            [
+                "a351c503.0f29d8"
+            ]
+        ]
+    },
+    {
+        "id": "a351c503.0f29d8",
+        "type": "json",
+        "z": "6fc1818e.5032a",
+        "name": "",
+        "x": 301.8957977294922,
+        "y": 344.8888854980469,
+        "wires": [
+            [
+                "688fba07.744384"
+            ]
+        ]
+    },
+    {
+        "id": "c1cf7c8d.ce2c38",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
