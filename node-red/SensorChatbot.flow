@@ -25,8 +25,8 @@
         "z": "18b5eed9.ba3b09",
         "name": "",
         "bot": "e1b6579b.b56d58",
-        "x": 841.5,
-        "y": 172,
+        "x": 1169.5,
+        "y": 194,
         "wires": [
             []
         ]
@@ -35,15 +35,16 @@
         "id": "bae320c.f307de",
         "type": "function",
         "z": "18b5eed9.ba3b09",
-        "name": "Check max",
-        "func": "var aq = msg.payload;\n\nif (aq.max > 2) {\n    var notify = {};\n    notify.payload = {};\n    notify.payload.content = \"Air quality below threshold\";\n    notify.payload.chatId = \"11192536\";\n    notify.payload.type = \"message\";\n    return notify;\n}",
+        "name": "Check AQI",
+        "func": "var aq = msg.payload;\n\nif (aq.max > 4) {\n    msg.payload = \"Air quality is critical\";\n} else if (aq.max > 3) {\n    msg.payload = \"Maybe open the window\";\n} else if (aq.max > 2) {\n    msg.payload = \"Air quality is getting worse\";\n} else {\n    msg.payload = \"Air quality is good\";\n}\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 454.5,
-        "y": 207.75,
+        "x": 406.5,
+        "y": 195.75,
         "wires": [
             [
-                "e4e59310.38ecd"
+                "e8b8d0aa.98c8d8",
+                "3b6fb8e.5bbaec8"
             ]
         ]
     },
@@ -52,11 +53,11 @@
         "type": "debug",
         "z": "18b5eed9.ba3b09",
         "name": "",
-        "active": true,
+        "active": false,
         "console": "false",
         "complete": "true",
-        "x": 802,
-        "y": 228,
+        "x": 1134,
+        "y": 154,
         "wires": []
     },
     {
@@ -79,8 +80,8 @@
         "topic": "aq-processed",
         "qos": "0",
         "broker": "c1cf7c8d.ce2c38",
-        "x": 140.5,
-        "y": 171.25,
+        "x": 107.5,
+        "y": 195.25,
         "wires": [
             [
                 "6c56ef09.0bc868",
@@ -95,9 +96,9 @@
         "name": "",
         "active": false,
         "console": "false",
-        "complete": "payload",
-        "x": 306,
-        "y": 134,
+        "complete": "true",
+        "x": 267,
+        "y": 152,
         "wires": []
     },
     {
@@ -105,35 +106,11 @@
         "type": "json",
         "z": "18b5eed9.ba3b09",
         "name": "",
-        "x": 288,
-        "y": 208,
+        "x": 265,
+        "y": 196,
         "wires": [
             [
                 "bae320c.f307de"
-            ]
-        ]
-    },
-    {
-        "id": "e4e59310.38ecd",
-        "type": "delay",
-        "z": "18b5eed9.ba3b09",
-        "name": "",
-        "pauseType": "rate",
-        "timeout": "5",
-        "timeoutUnits": "seconds",
-        "rate": "1",
-        "nbRateUnits": "10",
-        "rateUnits": "second",
-        "randomFirst": "1",
-        "randomLast": "5",
-        "randomUnits": "seconds",
-        "drop": true,
-        "x": 634.5,
-        "y": 172.75,
-        "wires": [
-            [
-                "27bceb42.b4850c",
-                "46a8e7bb.de16c"
             ]
         ]
     },
@@ -227,6 +204,75 @@
         "x": 923.2222900390625,
         "y": 416.3333435058594,
         "wires": []
+    },
+    {
+        "id": "e8b8d0aa.98c8d8",
+        "type": "rbe",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "x": 575,
+        "y": 194,
+        "wires": [
+            [
+                "6b546724.aa492"
+            ]
+        ]
+    },
+    {
+        "id": "40fc6040.57d68",
+        "type": "function",
+        "z": "18b5eed9.ba3b09",
+        "name": "Create Telegram msg",
+        "func": "var notify = {};\n\nnotify.payload = {};\nnotify.payload.content = msg.payload;\nnotify.payload.chatId = \"11192536\";\nnotify.payload.type = \"message\";\n\nreturn notify;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 940,
+        "y": 194,
+        "wires": [
+            [
+                "46a8e7bb.de16c",
+                "27bceb42.b4850c"
+            ]
+        ]
+    },
+    {
+        "id": "3b6fb8e.5bbaec8",
+        "type": "debug",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 575,
+        "y": 150,
+        "wires": []
+    },
+    {
+        "id": "6b546724.aa492",
+        "type": "delay",
+        "z": "18b5eed9.ba3b09",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "5",
+        "nbRateUnits": "2",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "x": 733.2333984375,
+        "y": 193.8333282470703,
+        "wires": [
+            [
+                "40fc6040.57d68"
+            ]
+        ]
     },
     {
         "id": "e1b6579b.b56d58",
