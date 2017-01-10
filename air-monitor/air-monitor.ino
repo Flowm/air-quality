@@ -13,11 +13,11 @@
 #include <Adafruit_BME280.h>
 #include "ams_iaq.h"
 
-#define BME_SCK 13
-#define BME_MISO 12
-#define BME_MOSI 11
 #define BME_CS 10
-#define MQ135_A 23
+#define BME_MOSI 11
+#define BME_MISO 12
+#define BME_SCK 13
+#define MQ135_A 14
 
 Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
 Iaq iaq;
