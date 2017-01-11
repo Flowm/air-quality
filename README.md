@@ -1,6 +1,9 @@
 # Air Quality monitor
 Implementation of an affordable indoor air quality monitor using various sensors connected to a microcontroller and streaming the data to a Raspberry PI for analysis using [Node-RED](http://nodered.org/).
 
+![Dashboard]
+
+
 ## Sensing Unit
 In the sensing unit a [Teensy](https://www.pjrc.com/teensy/) microcontroller reads the sensor data from the connected sensors and sends it over the attached Bluetooth BLE module.
 
@@ -48,3 +51,7 @@ Raspberry PI 3 comes with a pre-installed version of Node-Red. Additionally, it 
 (for controlling the neopixel LEDs, an additional library needs to be installed. This can be done by following the instructions on the npmjs or github page of this module)
 
 All the required flows needed for running the application can be found inside the node-red folder of this project. These flows can be easily imported via the web-based GUI provided by Node-Red.
+
+
+[Comment]: # Links to images and documents
+[Dashboard]: https://cloud.githubusercontent.com/assets/1117666/21831099/b9782bfa-d7a1-11e6-8d5f-f32e0b3c3636.png
