@@ -1,5 +1,5 @@
 # Air Quality monitor
-Implementation of an affordable indoor air quality monitor using various sensors connected to a microcontroller and streaming the data to a Raspberry PI for analysis using [Node-RED](http://nodered.org/).
+Implementation of an affordable indoor air quality monitor using various sensors connected to a microcontroller and streaming the data to a Raspberry Pi for analysis using [Node-RED](http://nodered.org/).
 
 ![Dashboard]
 
@@ -25,25 +25,30 @@ A Fritzing sketch documenting the layout of the current hardware prototype is in
 
 
 ## Processing unit
-This unit was installed and tested on a Raspberry PI 3 (model B) device, running Debian Jessie. The purpose of this unit is to process all the data received via Bluetooth from the sensing unit and compute the current air quality index, based on the latest measurements. This unit is also configured to display the current status, as well as triggering real-time notifications in case the air quality gets worse.
+This unit was installed and tested on a [Raspberry Pi 3], running Debian Jessie.
+The purpose of this unit is to process all the data received via Bluetooth from the sensing unit and compute the current air quality index, based on the latest measurements.
+This unit is also configured to display the current status, as well as triggering real-time notifications in case the air quality gets worse.
 
 ### Hardware
-In the processing unit, a Teensy microcontroller reads the data sent from the sensing unit using an additional Bluetooth BLE module. This data is then forwarded to the Raspberry PI.
+Besides the Raspberry Pi an additional Bluetooth BLE module is used to receive the data from wirelessly connected sensing units.
 
-| Category | Name                  | Price |
-|----------|-----------------------|------:|
-| Core     | [Raspberry PI 3]      | ~40€  |
-| Comm     | [Teensy 3.2][Teensy]  | ~24€  |
-| Comm     | [HM-11]               |  ~5€  |
-| LED      | [WS2812 RGB LED Ring] |  ~7€  |
+| Category       | Name                  | Price |
+|----------------|-----------------------|------:|
+| Core           | [Raspberry Pi 3]      | ~40€  |
+| Comm           | [HM-11]               |  ~5€  |
+| LED (optional) | [WS2812 RGB LED Ring] |  ~7€  |
 
-The Neopixel LED needs to be connected to the Raspberry PI board using the following pins:
+The HM-11 BLE module is connected to the serial port of the Raspberry Pi:
+- [TXD](http://pinout.xyz/pinout/pin8_gpio14)
+- [RXD](http://pinout.xyz/pinout/pin10_gpio15)
+
+The Neopixel LED ring can be additionally connected to the Raspberry Pi to indicate the current air quality directly on the processing unit.
 - VCC (any)
 - GND (any)
 - [BCM 18](https://pinout.xyz/pinout/pin12_gpio18) (pin 12) for providing input to the LED
 
 ### Installation
-Raspberry PI 3 comes with a pre-installed version of Node-Red. Additionally, it is necessary to install the following modules:
+Raspberry Pi 3 comes with a pre-installed version of Node-Red. Additionally, it is necessary to install the following modules:
 - [node-red-node-sqlite](https://www.npmjs.com/package/node-red-node-sqlite)
 - [node-red-contrib-telegrambot](https://github.com/windkh/node-red-contrib-telegrambot)
 - [node-red-dashboard](https://github.com/node-red/node-red-dashboard)
@@ -61,5 +66,5 @@ All the required flows needed for running the application can be found inside th
 [iAQ-core C]: http://ams.com/eng/Products/Environmental-Sensors/Air-Quality-Sensors/iAQ-core-C
 [MQ135]: https://www.olimex.com/Products/Components/Sensors/SNS-MQ135
 [SM-PWM-01C]: http://www.amphenol-sensors.com/en/component/edocman/3-co2/4-co2-modules/194-sm-pwm-01c
-[Raspberry PI 3]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b
+[Raspberry Pi 3]: https://www.raspberrypi.org/products/raspberry-pi-3-model-b
 [WS2812 RGB LED Ring]: http://www.watterott.com/de/WS2812B-RGB-Ring-8
