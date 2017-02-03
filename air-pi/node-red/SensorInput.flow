@@ -1,42 +1,42 @@
 [
     {
-        "id": "701a779f.211a18",
+        "id": "e09c80eb.da79a",
         "type": "tab",
         "label": "SensorInput"
     },
     {
-        "id": "6df25c63.240e34",
+        "id": "b7d5a55e.862748",
         "type": "serial in",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Sensors",
-        "serial": "b4141b9a.c8349",
+        "serial": "ed8ea525.724fb8",
         "x": 121,
         "y": 348,
         "wires": [
             [
-                "1b0ea87d.7d3558",
-                "57d13f70.59233"
+                "80c1c216.bf816",
+                "8f62b2e4.1354d8"
             ]
         ]
     },
     {
-        "id": "4eb94ecb.d5ae",
+        "id": "871518b6.079ca",
         "type": "sqlite",
-        "z": "701a779f.211a18",
-        "mydb": "80bcdc23.753798",
+        "z": "e09c80eb.da79a",
+        "mydb": "c9c91b2b.2e14a8",
         "name": "SensorDB",
         "x": 1314.999984741211,
         "y": 270,
         "wires": [
             [
-                "87f84797.96f308"
+                "529c2ba0.468944"
             ]
         ]
     },
     {
-        "id": "d132b57b.219b3",
+        "id": "21937f0c.d8dc88",
         "type": "inject",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Create table",
         "topic": "create table sensors(id INTEGER PRIMARY KEY NOT NULL, temperature REAL, humidity REAL, pressure REAL, mq135 INTEGER, timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL);",
         "payload": "",
@@ -48,14 +48,14 @@
         "y": 229,
         "wires": [
             [
-                "4eb94ecb.d5ae"
+                "871518b6.079ca"
             ]
         ]
     },
     {
-        "id": "9dc65c9a.3d0398",
+        "id": "fcdda470.eaec78",
         "type": "inject",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Delete table",
         "topic": "DROP TABLE sensors",
         "payload": "",
@@ -67,14 +67,14 @@
         "y": 177,
         "wires": [
             [
-                "4eb94ecb.d5ae"
+                "871518b6.079ca"
             ]
         ]
     },
     {
-        "id": "87f84797.96f308",
+        "id": "529c2ba0.468944",
         "type": "debug",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "",
         "active": false,
         "console": "false",
@@ -84,9 +84,9 @@
         "wires": []
     },
     {
-        "id": "405ea7b3.8860d",
+        "id": "e3449c4.f5e10e",
         "type": "function",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "INSERT BIND",
         "func": "var data = msg.payload;\n\nmsg.topic = \"INSERT INTO sensors (temperature, humidity, pressure, mq135) VALUES (?,?,?,?)\";\nmsg.payload = [data.temperature, data.humidity, data.pressure, data.mq135];\n\nreturn msg;",
         "outputs": 1,
@@ -95,15 +95,15 @@
         "y": 319,
         "wires": [
             [
-                "a39fcf7.cfba4b",
-                "4eb94ecb.d5ae"
+                "8478f485.76c0a",
+                "871518b6.079ca"
             ]
         ]
     },
     {
-        "id": "6db6059f.c4e974",
+        "id": "88fee998.939208",
         "type": "function",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Sensors to JSON",
         "func": "var sensors = msg.payload.split(\",\");\n\nvar json = {};\nfor (i=0; i<sensors.length; i++) {\n\tvar fields = sensors[i].split(\"=\");\n\tif (fields[1] !== \"\") {\n\t    json[fields[0]] = fields[1];   \n\t}\n}\n\nmsg.payload = json;\n\nreturn msg;",
         "outputs": 1,
@@ -112,14 +112,14 @@
         "y": 349,
         "wires": [
             [
-                "4fd6db01.19ced4"
+                "7cfbb23a.acb304"
             ]
         ]
     },
     {
-        "id": "6fded24.2b96c2c",
+        "id": "5c3b9b8c.4ef664",
         "type": "debug",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "",
         "active": false,
         "console": "false",
@@ -129,23 +129,23 @@
         "wires": []
     },
     {
-        "id": "c8be6f26.4b2258",
+        "id": "4343d6b.c1c6aa8",
         "type": "sqlite",
-        "z": "701a779f.211a18",
-        "mydb": "80bcdc23.753798",
+        "z": "e09c80eb.da79a",
+        "mydb": "c9c91b2b.2e14a8",
         "name": "SensorDB",
         "x": 511,
         "y": 541,
         "wires": [
             [
-                "529b7a9.428f484"
+                "936fbee2.82f7a"
             ]
         ]
     },
     {
-        "id": "a0e52cae.f0b2c8",
+        "id": "d3937c74.86f5b",
         "type": "inject",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "SELECT *",
         "topic": "SELECT * FROM SENSORS",
         "payload": "",
@@ -157,14 +157,14 @@
         "y": 541,
         "wires": [
             [
-                "c8be6f26.4b2258"
+                "4343d6b.c1c6aa8"
             ]
         ]
     },
     {
-        "id": "529b7a9.428f484",
+        "id": "936fbee2.82f7a",
         "type": "debug",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "",
         "active": false,
         "console": "false",
@@ -174,9 +174,9 @@
         "wires": []
     },
     {
-        "id": "a39fcf7.cfba4b",
+        "id": "8478f485.76c0a",
         "type": "debug",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "",
         "active": false,
         "console": "false",
@@ -186,9 +186,9 @@
         "wires": []
     },
     {
-        "id": "1b0ea87d.7d3558",
+        "id": "80c1c216.bf816",
         "type": "debug",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "",
         "active": false,
         "console": "false",
@@ -198,9 +198,9 @@
         "wires": []
     },
     {
-        "id": "8a4b8f7c.44ba08",
+        "id": "c087950d.660f6",
         "type": "delay",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Limit messages",
         "pauseType": "rate",
         "timeout": "5",
@@ -216,30 +216,30 @@
         "y": 350,
         "wires": [
             [
-                "6fded24.2b96c2c",
-                "405ea7b3.8860d",
-                "2cf0e710.2251c"
+                "5c3b9b8c.4ef664",
+                "e3449c4.f5e10e",
+                "e784f013.1195b"
             ]
         ]
     },
     {
-        "id": "2fed0d33.cf037a",
+        "id": "28d11b4c.8baa34",
         "type": "sqlite",
-        "z": "701a779f.211a18",
-        "mydb": "80bcdc23.753798",
+        "z": "e09c80eb.da79a",
+        "mydb": "c9c91b2b.2e14a8",
         "name": "SensorDB",
         "x": 510,
         "y": 598,
         "wires": [
             [
-                "d369ac35.f98f7"
+                "2c09e77b.f19d08"
             ]
         ]
     },
     {
-        "id": "678e3d7e.abf3dc",
+        "id": "294e74.793a098c",
         "type": "inject",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "SELECT LAST",
         "topic": "SELECT * FROM sensors ORDER BY id DESC LIMIT 1;",
         "payload": "",
@@ -251,14 +251,14 @@
         "y": 598,
         "wires": [
             [
-                "2fed0d33.cf037a"
+                "28d11b4c.8baa34"
             ]
         ]
     },
     {
-        "id": "d369ac35.f98f7",
+        "id": "2c09e77b.f19d08",
         "type": "debug",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "",
         "active": false,
         "console": "false",
@@ -268,22 +268,22 @@
         "wires": []
     },
     {
-        "id": "2cf0e710.2251c",
+        "id": "e784f013.1195b",
         "type": "mqtt out",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Publish sensor data",
         "topic": "aq-raw",
         "qos": "0",
         "retain": "false",
-        "broker": "c1cf7c8d.ce2c38",
+        "broker": "fcc6bd86.6e101",
         "x": 1152.499984741211,
         "y": 394,
         "wires": []
     },
     {
-        "id": "4fd6db01.19ced4",
+        "id": "7cfbb23a.acb304",
         "type": "function",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Filter",
         "func": "var json = msg.payload;\n\n//Hardcoded invalid values, meaning the sensors are currently disabled\nif (\"temperature\" in json && \"pressure\" in json && \"humidity\" in json) {\n    //First case: bme280 not connected\n    //Seconds case: bme280 init failed\n    if ((parseInt(json.temperature) == 187.29 && parseInt(json.pressure) == -104.50 && parseInt(json.humidity) == 100.00) || (parseInt(json.temperature) == 23.78 && parseInt(json.pressure) == 754.50 && parseInt(json.humidity) == 65.886)) {\n        delete json.temperature;\n        delete json.pressure;\n        delete json.humidity;\n    }\n}\n\nif (\"mq135\" in json && parseInt(json.mq135) == 1023) {\n    delete json.mq135;\n}\n\nif (\"iaqs\" in json && parseInt(json.iaqs) !== 0) {\n    delete json.iaqs;\n    delete json.co2;\n    delete json.tvoc;\n}\n\nmsg.payload = json;\nreturn msg;\n",
         "outputs": 1,
@@ -292,14 +292,14 @@
         "y": 350,
         "wires": [
             [
-                "8a4b8f7c.44ba08"
+                "c087950d.660f6"
             ]
         ]
     },
     {
-        "id": "57d13f70.59233",
+        "id": "8f62b2e4.1354d8",
         "type": "function",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "Checksum",
         "func": "function checksum(str, chk) {\n    sum = 0;\n    for (var i = 0; i < str.length; i++) {\n        var chr = str.charCodeAt(i);\n        sum += (chr * i);\n    }\n    sum = 0xFF & sum;\n    return chk == sum;\n}\n\nvar cleanString = msg.payload.replace(/\\n|\\r/g,\"\");\nvar tmp = cleanString.split(\",chk=\");\nvar check = (tmp.length == 2) ? tmp[1] : null;\nif (check === null) {\n    return null;\n}\n\nvar cleanPayload = tmp[0];\n//Performing checksum\nif (!checksum(cleanPayload, parseInt(check))) {\n    return null;\n}\n\nmsg.payload = cleanPayload;\n\nreturn msg;",
         "outputs": 1,
@@ -308,15 +308,15 @@
         "y": 348.1632080078125,
         "wires": [
             [
-                "6db6059f.c4e974",
-                "5e0c8122.05af6"
+                "88fee998.939208",
+                "f41a5acb.ecd368"
             ]
         ]
     },
     {
-        "id": "5e0c8122.05af6",
+        "id": "f41a5acb.ecd368",
         "type": "debug",
-        "z": "701a779f.211a18",
+        "z": "e09c80eb.da79a",
         "name": "",
         "active": false,
         "console": "false",
@@ -326,11 +326,11 @@
         "wires": []
     },
     {
-        "id": "b4141b9a.c8349",
+        "id": "ed8ea525.724fb8",
         "type": "serial-port",
         "z": "",
-        "serialport": "/dev/ttyACM0",
-        "serialbaud": "115200",
+        "serialport": "/dev/serial0",
+        "serialbaud": "9600",
         "databits": "8",
         "parity": "none",
         "stopbits": "1",
@@ -340,13 +340,13 @@
         "addchar": false
     },
     {
-        "id": "80bcdc23.753798",
+        "id": "c9c91b2b.2e14a8",
         "type": "sqlitedb",
         "z": "",
-        "db": "/home/pi/db/aq.db"
+        "db": "/home/nodered/db/aq.db"
     },
     {
-        "id": "c1cf7c8d.ce2c38",
+        "id": "fcc6bd86.6e101",
         "type": "mqtt-broker",
         "z": "",
         "broker": "localhost",
