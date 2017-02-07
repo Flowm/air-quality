@@ -1,30 +1,32 @@
 [
     {
-        "id": "18b5eed9.ba3b09",
+        "id": "629f0cab.9661bc",
         "type": "tab",
         "label": "SensorChatbot"
     },
     {
-        "id": "75ef9c7a.7a0dac",
+        "id": "1966deaf.a7dc49",
         "type": "telegram receiver",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
-        "bot": "e1b6579b.b56d58",
-        "x": 138.44451904296875,
-        "y": 446.22222900390625,
+        "bot": "a02ad8d9.0de8a",
+        "x": 128.44451904296875,
+        "y": 354.22222900390625,
         "wires": [
-            [],
             [
-                "d2688f24.7aa438"
+                "72f21917.829f58"
+            ],
+            [
+                "72f21917.829f58"
             ]
         ]
     },
     {
-        "id": "27bceb42.b4850c",
+        "id": "785bfe4b.2a7da",
         "type": "telegram sender",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
-        "bot": "e1b6579b.b56d58",
+        "bot": "a02ad8d9.0de8a",
         "x": 1169.5,
         "y": 194,
         "wires": [
@@ -32,9 +34,9 @@
         ]
     },
     {
-        "id": "bae320c.f307de",
+        "id": "fde578fe.2d8fe8",
         "type": "function",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "Check AQI",
         "func": "var aq = msg.payload;\n\nif (aq.max > 4) {\n    msg.payload = \"Air quality is critical\";\n} else if (aq.max > 3) {\n    msg.payload = \"Maybe open the window\";\n} else if (aq.max > 2) {\n    msg.payload = \"Air quality is getting worse\";\n} else {\n    msg.payload = \"Air quality is good\";\n}\n\nreturn msg;",
         "outputs": 1,
@@ -43,15 +45,15 @@
         "y": 195.75,
         "wires": [
             [
-                "e8b8d0aa.98c8d8",
-                "3b6fb8e.5bbaec8"
+                "8a1ce504.3d863",
+                "442e4462.324434"
             ]
         ]
     },
     {
-        "id": "46a8e7bb.de16c",
+        "id": "485473ad.8bd9bc",
         "type": "debug",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "active": false,
         "console": "false",
@@ -61,38 +63,38 @@
         "wires": []
     },
     {
-        "id": "317976e8.a05802",
+        "id": "ca61ad3b.c95fb",
         "type": "telegram sender",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
-        "bot": "e1b6579b.b56d58",
-        "x": 948.2222900390625,
-        "y": 341.3333435058594,
+        "bot": "a02ad8d9.0de8a",
+        "x": 1140.2222900390625,
+        "y": 353.3333435058594,
         "wires": [
             []
         ]
     },
     {
-        "id": "11565519.958a9b",
+        "id": "4aef8c7f.55e6c4",
         "type": "mqtt in",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "topic": "aq-processed",
         "qos": "0",
-        "broker": "c1cf7c8d.ce2c38",
+        "broker": "eb95d7ca.385e38",
         "x": 107.5,
         "y": 195.25,
         "wires": [
             [
-                "6c56ef09.0bc868",
-                "c5a6db15.d73e88"
+                "de49deb2.37e06",
+                "519c0383.bd8884"
             ]
         ]
     },
     {
-        "id": "6c56ef09.0bc868",
+        "id": "de49deb2.37e06",
         "type": "debug",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "active": false,
         "console": "false",
@@ -102,65 +104,65 @@
         "wires": []
     },
     {
-        "id": "c5a6db15.d73e88",
+        "id": "519c0383.bd8884",
         "type": "json",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "x": 265,
         "y": 196,
         "wires": [
             [
-                "bae320c.f307de"
+                "fde578fe.2d8fe8"
             ]
         ]
     },
     {
-        "id": "d491dbd4.9aa5f",
+        "id": "3a848316.90c9dc",
         "type": "sqlite",
-        "z": "18b5eed9.ba3b09",
-        "mydb": "80bcdc23.753798",
+        "z": "629f0cab.9661bc",
+        "mydb": "cafc488c.d5056",
         "name": "SensorDB",
-        "x": 527.2222900390625,
-        "y": 423.3333435058594,
+        "x": 523.2222900390625,
+        "y": 354.3333435058594,
         "wires": [
             [
-                "8d5a1b5f.68b4e",
-                "f5d6f96d.113198"
+                "a7f490f9.f7afa8",
+                "b302f107.c95a58"
             ]
         ]
     },
     {
-        "id": "8d5a1b5f.68b4e",
+        "id": "a7f490f9.f7afa8",
         "type": "debug",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "active": false,
         "console": "false",
         "complete": "false",
-        "x": 700.2222900390625,
-        "y": 472.3333435058594,
+        "x": 701.2222900390625,
+        "y": 400.3333740234375,
         "wires": []
     },
     {
-        "id": "d2688f24.7aa438",
+        "id": "72f21917.829f58",
         "type": "function",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "SELECT LAST",
         "func": "var msg = {};\nmsg.topic = \"SELECT * FROM sensors ORDER BY id DESC LIMIT 1;\"\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
-        "x": 352.6111145019531,
-        "y": 454.08331298828125,
+        "x": 339.6111145019531,
+        "y": 354.08331298828125,
         "wires": [
             [
-                "d491dbd4.9aa5f"
+                "3a848316.90c9dc"
             ]
         ]
     },
     {
-        "id": "4609e6cb.709898",
+        "id": "460184ff.73d62c",
         "type": "inject",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "SELECT LAST",
         "topic": "SELECT * FROM sensors ORDER BY id DESC LIMIT 1;",
         "payload": "",
@@ -168,47 +170,47 @@
         "repeat": "",
         "crontab": "",
         "once": false,
-        "x": 355.2222900390625,
-        "y": 393.3333435058594,
+        "x": 338.2222900390625,
+        "y": 399.3333435058594,
         "wires": [
             [
-                "d491dbd4.9aa5f"
+                "3a848316.90c9dc"
             ]
         ]
     },
     {
-        "id": "f5d6f96d.113198",
+        "id": "5898ad1d.240f6c",
         "type": "function",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "Prepare message",
-        "func": "var aq = msg.payload[0];\n\nvar response = {};\nresponse.payload = {};\nresponse.payload.content = JSON.stringify(aq);\nresponse.payload.chatId = \"11192536\";\nresponse.payload.type = \"message\";\nreturn response;",
+        "func": "var aq = msg.payload;\n\nvar response = {};\nresponse.payload = {};\nresponse.payload.content = JSON.stringify(aq);\nresponse.payload.chatId = \"11192536\";\nresponse.payload.type = \"message\";\nreturn response;",
         "outputs": 1,
         "noerr": 0,
-        "x": 719.2222900390625,
-        "y": 381.3333435058594,
+        "x": 921.2222900390625,
+        "y": 353.3333435058594,
         "wires": [
             [
-                "317976e8.a05802",
-                "9305e2fd.a800e"
+                "ca61ad3b.c95fb",
+                "9294db3a.af75c8"
             ]
         ]
     },
     {
-        "id": "9305e2fd.a800e",
+        "id": "9294db3a.af75c8",
         "type": "debug",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "active": false,
         "console": "false",
-        "complete": "false",
-        "x": 923.2222900390625,
-        "y": 416.3333435058594,
+        "complete": "payload",
+        "x": 1122.2222900390625,
+        "y": 400.3333740234375,
         "wires": []
     },
     {
-        "id": "e8b8d0aa.98c8d8",
+        "id": "8a1ce504.3d863",
         "type": "rbe",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "func": "rbe",
         "gap": "",
@@ -218,14 +220,14 @@
         "y": 194,
         "wires": [
             [
-                "6b546724.aa492"
+                "15b888c2.4777e7"
             ]
         ]
     },
     {
-        "id": "40fc6040.57d68",
+        "id": "4c878b37.b8d81c",
         "type": "function",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "Create Telegram msg",
         "func": "var notify = {};\n\nnotify.payload = {};\nnotify.payload.content = msg.payload;\nnotify.payload.chatId = \"11192536\";\nnotify.payload.type = \"message\";\n\nreturn notify;",
         "outputs": 1,
@@ -234,15 +236,15 @@
         "y": 194,
         "wires": [
             [
-                "46a8e7bb.de16c",
-                "27bceb42.b4850c"
+                "485473ad.8bd9bc",
+                "785bfe4b.2a7da"
             ]
         ]
     },
     {
-        "id": "3b6fb8e.5bbaec8",
+        "id": "442e4462.324434",
         "type": "debug",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "active": false,
         "console": "false",
@@ -252,9 +254,9 @@
         "wires": []
     },
     {
-        "id": "6b546724.aa492",
+        "id": "15b888c2.4777e7",
         "type": "delay",
-        "z": "18b5eed9.ba3b09",
+        "z": "629f0cab.9661bc",
         "name": "",
         "pauseType": "rate",
         "timeout": "5",
@@ -270,20 +272,49 @@
         "y": 193.8333282470703,
         "wires": [
             [
-                "40fc6040.57d68"
+                "4c878b37.b8d81c"
             ]
         ]
     },
     {
-        "id": "e1b6579b.b56d58",
+        "id": "b302f107.c95a58",
+        "type": "function",
+        "z": "629f0cab.9661bc",
+        "name": "Filter data",
+        "func": "var aq = msg.payload[0];\ndelete aq.id;\ndelete aq.iaqs;\n\nmsg.payload = aq;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 699,
+        "y": 354,
+        "wires": [
+            [
+                "5898ad1d.240f6c",
+                "e8958844.b699b"
+            ]
+        ]
+    },
+    {
+        "id": "e8958844.b699b",
+        "type": "debug",
+        "z": "629f0cab.9661bc",
+        "name": "",
+        "active": false,
+        "console": "false",
+        "complete": "payload",
+        "x": 907,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "a02ad8d9.0de8a",
         "type": "telegram bot",
         "z": "",
         "botname": "AirBot",
-        "usernames": "[]",
-        "chatids": "[]"
+        "usernames": "",
+        "chatids": ""
     },
     {
-        "id": "c1cf7c8d.ce2c38",
+        "id": "eb95d7ca.385e38",
         "type": "mqtt-broker",
         "z": "",
         "broker": "localhost",
@@ -301,9 +332,9 @@
         "birthPayload": ""
     },
     {
-        "id": "80bcdc23.753798",
+        "id": "cafc488c.d5056",
         "type": "sqlitedb",
         "z": "",
-        "db": "/home/pi/db/aq.db"
+        "db": "/home/nodered/db/aq.db"
     }
 ]
