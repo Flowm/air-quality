@@ -55,7 +55,7 @@ void Mqtt::on_publish(int mid) {
 
 void Mqtt::on_message(const struct mosquitto_message* message) {
     char* msg = (char*) message->payload;
-    printf("Mqtt: Message received %s\n", msg);
+    printf("Mqtt: Message received '%s'\n", msg);
     strncpy(msg_buf, msg, sizeof(msg_buf));
 
     sem_post(&msg_sem);

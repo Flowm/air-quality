@@ -1,5 +1,6 @@
-#include <cstring>
 #include <cstdio>
+#include <cstring>
+#include <unistd.h>
 
 #include "Mqtt.hpp"
 
@@ -12,8 +13,14 @@ int main(int argc, char *argv[]) {
     mqtt.sub("ping");
 
     while (true) {
-        mqtt.wait();
-        mqtt.read(buf, sizeof(buf));
+        int res = mqtt.loop();
+        if (res) {
+            mqtt.reconnect();
+        }
+        usleep(1e5);
+
+        //mqtt.wait();
+        //mqtt.read(buf, sizeof(buf));
         mqtt.pub("pong", buf);
     }
 
