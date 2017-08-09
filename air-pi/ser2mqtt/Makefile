@@ -1,4 +1,4 @@
-OBJS = Mqtt.cpp
+OBJS = Mqtt.cpp Sensor.cpp
 LIBS = -lmosquittopp -lpthread
 CC = g++
 
