@@ -30,21 +30,70 @@ Sensor::~Sensor() {
     close(fd);
 }
 
-int Sensor::get(char* line, size_t line_size) {
+bool Sensor::read_line() {
     char c;
     int pos = 0;
     while(read(fd, &c, 1)) {
         if (c == '\r') {
-            strncpy(line, buf, line_size);
-            return 0;
-        } else if (c < LINE_SZ) {
+            return true;
+        } else if (pos < LINE_SZ) {
             if (c == '\n') {
-                buf[pos++] = '\0';
+                linebuf[pos++] = '\0';
             } else {
-                buf[pos++] = c;
+                linebuf[pos++] = c;
             }
         }
     }
+    // Checksum
+    //for (int i=0; i<len; i++) {
+    //    sum += buf[i]*i;
+    //}
+    return false;
+}
 
-    return -1;
+bool Sensor::get_json(char* buf, int buf_sz) {
+    if (!read_line()) {
+        return false;
+    }
+
+    char* key[20];
+    char* val[20];
+    unsigned int idx = 0;
+
+    // Extract key ptrs
+    key[idx] = strtok(linebuf, ",");
+    while (key[idx] && idx < sizeof(key)) {
+        idx++;
+        key[idx] = strtok(NULL, ",");
+    }
+
+    // Loop over keys to obtain values
+    for (unsigned int i = 0; i < idx; i++) {
+        char* k = strtok(key[i], "=");
+        char* v = strtok(NULL, "=");
+        if (k && v) {
+            key[i] = k;
+            val[i] = v;
+            //printf("%d: %s:%s\n", i, key[i], val[i]);
+        }
+    }
+    //printf("\n");
+
+    // Construct json string
+    int cnt = snprintf(buf, buf_sz, "{");
+    for (unsigned int i = 0; i < idx; i++) {
+        if (buf_sz-cnt < 4) {
+            // Abort without enough space
+            return false;
+        }
+        if (i)
+            cnt += snprintf(buf+cnt, buf_sz-cnt, ",\n");
+        cnt += snprintf(buf+cnt, buf_sz-cnt, "\"%s\":%s", key[i], val[i]);
+    }
+    if (buf_sz-cnt < 1) {
+        return false;
+    }
+    cnt += snprintf(buf+cnt, buf_sz-cnt, "}");
+
+    return true;
 }

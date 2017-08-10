@@ -10,9 +10,10 @@ class Sensor
         Sensor(const char *device);
         ~Sensor();
 
-        int get(char* buf, size_t buf_size);
+        bool read_line();
+        bool get_json(char* buf, int buf_sz);
 
     private:
         int fd;
-        char buf[LINE_SZ];
+        char linebuf[LINE_SZ];
 };

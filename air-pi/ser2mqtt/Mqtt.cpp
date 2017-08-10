@@ -46,7 +46,7 @@ void Mqtt::on_connect(int rc) {
 };
 
 void Mqtt::on_disconnect(int rc) {
-    printf("Mqtt: Disconnected\n");
+    printf("Mqtt: Disconnected %d\n", rc);
 };
 
 void Mqtt::on_publish(int mid) {

@@ -5,28 +5,21 @@
 #include "Mqtt.hpp"
 #include "Sensor.hpp"
 
-int main(int argc, char *argv[]) {
+const char* topic = "sensor/air-quality";
+
+int main() {
     Mqtt mqtt("rpi", "localhost");
     Sensor sensor("/dev/serial0");
-
-    char buf[200];
-
-    printf("ser2mqtt: Start\n");
-
-    mqtt.sub("ping");
+    char buf[256];
 
     while (true) {
-        //int res = mqtt.loop();
-        //if (res) {
-        //    mqtt.reconnect();
-        //}
+        if (mqtt.loop()) {
+            mqtt.reconnect();
+        }
 
-        sensor.get(buf, sizeof(buf));
-        printf("S: %s\n", buf);
-
-        //mqtt.wait();
-        //mqtt.read(buf, sizeof(buf));
-        //mqtt.pub("pong", buf);
+        sensor.get_json(buf, sizeof(buf));
+        printf("Pub: %s\n", buf);
+        mqtt.pub(topic, buf);
     }
 
     return 0;
