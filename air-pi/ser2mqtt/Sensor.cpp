@@ -67,11 +67,20 @@ bool Sensor::get_json(char* buf, int buf_sz) {
         key[idx] = strtok(NULL, ",");
     }
 
+    // Discard incomplete measurements
+    if (idx != 9) {
+        return false;
+    }
+
     // Loop over keys to obtain values
     for (unsigned int i = 0; i < idx; i++) {
         char* k = strtok(key[i], "=");
         char* v = strtok(NULL, "=");
         if (k && v) {
+            // Remove leading zeros for valid json
+            while (*v && *(v+1) && *v == '0') {
+                v++;
+            }
             key[i] = k;
             val[i] = v;
             //printf("%d: %s:%s\n", i, key[i], val[i]);
@@ -80,20 +89,20 @@ bool Sensor::get_json(char* buf, int buf_sz) {
     //printf("\n");
 
     // Construct json string
-    int cnt = snprintf(buf, buf_sz, "{");
+    int cnt = snprintf(buf, buf_sz, "{ ");
     for (unsigned int i = 0; i < idx; i++) {
         if (buf_sz-cnt < 4) {
             // Abort without enough space
             return false;
         }
         if (i)
-            cnt += snprintf(buf+cnt, buf_sz-cnt, ",\n");
-        cnt += snprintf(buf+cnt, buf_sz-cnt, "\"%s\":%s", key[i], val[i]);
+            cnt += snprintf(buf+cnt, buf_sz-cnt, ", ");
+        cnt += snprintf(buf+cnt, buf_sz-cnt, "\"%s\": %s", key[i], val[i]);
     }
-    if (buf_sz-cnt < 1) {
+    if (buf_sz-cnt < 2) {
         return false;
     }
-    cnt += snprintf(buf+cnt, buf_sz-cnt, "}");
+    cnt += snprintf(buf+cnt, buf_sz-cnt, " }");
 
     return true;
 }
