@@ -11,6 +11,7 @@ class Sensor
         ~Sensor();
 
         bool read_line();
+        bool verify_checksum();
         bool get_json(char* buf, int buf_sz);
 
     private:

@@ -35,7 +35,7 @@ bool Sensor::read_line() {
     int pos = 0;
     while(read(fd, &c, 1)) {
         if (c == '\r') {
-            return true;
+            return verify_checksum();
         } else if (pos < LINE_SZ) {
             if (c == '\n') {
                 linebuf[pos++] = '\0';
@@ -44,11 +44,32 @@ bool Sensor::read_line() {
             }
         }
     }
-    // Checksum
-    //for (int i=0; i<len; i++) {
-    //    sum += buf[i]*i;
-    //}
     return false;
+}
+
+bool Sensor::verify_checksum() {
+    char* chk = strstr(linebuf, ",chk=");
+    if (!chk)
+        return false;
+
+    // Retrieve checksum from string
+    char* k = strtok(chk, "=");
+    char* v = strtok(NULL, "=");
+    if (!k || !v)
+        return false;
+    char chk_recv = strtol(v, NULL, 10);
+
+    // Calculate checksum from string
+    char chk_calc = 0;
+    for (int i=0; i<chk-linebuf; i++) {
+        chk_calc += linebuf[i]*i;
+    }
+
+    //printf("CHK: recv=%d calc=%d\n", chk_recv, chk_calc);
+    if (chk_recv != chk_calc)
+        return false;
+
+    return true;
 }
 
 bool Sensor::get_json(char* buf, int buf_sz) {
