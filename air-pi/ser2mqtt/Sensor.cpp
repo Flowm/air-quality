@@ -69,6 +69,9 @@ bool Sensor::verify_checksum() {
     if (chk_recv != chk_calc)
         return false;
 
+    // Data string ends where checksum starts
+    *chk = '\0';
+
     return true;
 }
 
@@ -86,11 +89,6 @@ bool Sensor::get_json(char* buf, int buf_sz) {
     while (key[idx] && idx < sizeof(key)) {
         idx++;
         key[idx] = strtok(NULL, ",");
-    }
-
-    // Discard incomplete measurements
-    if (idx != 9) {
-        return false;
     }
 
     // Loop over keys to obtain values
@@ -126,6 +124,7 @@ bool Sensor::get_json(char* buf, int buf_sz) {
             cnt += snprintf(buf+cnt, buf_sz-cnt, ", ");
         cnt += snprintf(buf+cnt, buf_sz-cnt, "\"%s\": %s", key[i], val[i]);
     }
+    // Abort without enough space
     if (buf_sz-cnt < 2) {
         return false;
     }
