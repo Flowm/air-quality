@@ -77,8 +77,8 @@ bool Sensor::get_json(char* buf, int buf_sz) {
         return false;
     }
 
-    char* key[20];
-    char* val[20];
+    char* key[20] = {};
+    char* val[20] = {};
     unsigned int idx = 0;
 
     // Extract key ptrs
@@ -95,27 +95,33 @@ bool Sensor::get_json(char* buf, int buf_sz) {
 
     // Loop over keys to obtain values
     for (unsigned int i = 0; i < idx; i++) {
-        char* k = strtok(key[i], "=");
-        char* v = strtok(NULL, "=");
-        if (k && v) {
+        strtok(key[i], "=");
+        if (char* v = strtok(NULL, "=")) {
             // Remove leading zeros for valid json
             while (*v && *(v+1) && *v == '0') {
                 v++;
             }
-            key[i] = k;
+            // Save value
             val[i] = v;
             //printf("%d: %s:%s\n", i, key[i], val[i]);
         }
     }
     //printf("\n");
 
-    // Construct json string
+    // Create json string
     int cnt = snprintf(buf, buf_sz, "{ ");
     for (unsigned int i = 0; i < idx; i++) {
+        // Abort without enough space
         if (buf_sz-cnt < 4) {
-            // Abort without enough space
             return false;
         }
+
+        // Ignore keys without value
+        if (!key[i] || !val[i]) {
+            continue;
+        }
+
+        // Add key value pair to json string
         if (i)
             cnt += snprintf(buf+cnt, buf_sz-cnt, ", ");
         cnt += snprintf(buf+cnt, buf_sz-cnt, "\"%s\": %s", key[i], val[i]);
