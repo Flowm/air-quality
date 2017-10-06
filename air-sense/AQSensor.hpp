@@ -1,5 +1,5 @@
 struct AQSensor {
-  public:
+public:
     float temperature;
     float humidity;
     float pressure;

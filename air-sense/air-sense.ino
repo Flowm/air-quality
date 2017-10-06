@@ -29,65 +29,65 @@ char buf[BUFSZ];
 int counter = 0;
 
 void setup() {
-  Serial.begin(115200);
-  Serial1.begin(9600);
-  delay(2000);
+    Serial.begin(115200);
+    Serial1.begin(9600);
+    delay(2000);
 
-  // Setup BME280
-  Serial.println("BME280 init");
-  if (!bme.begin()) {
-    while (1) {
-      Serial.println("BME280 init failed");
-      delay(1000);
+    // Setup BME280
+    Serial.println("BME280 init");
+    if (!bme.begin()) {
+        while (1) {
+            Serial.println("BME280 init failed");
+            delay(1000);
+        }
     }
-  }
 
-  // Setup MQ135
-  pinMode(MQ135_A, INPUT);
+    // Setup MQ135
+    pinMode(MQ135_A, INPUT);
 }
 
 void loop() {
-  // Read sensor data
-  aq.temperature = bme.readTemperature();
-  aq.humidity = bme.readHumidity();
-  aq.pressure = bme.readPressure() / 100.0F;
-  aq.gas_extra = analogRead(MQ135_A);
+    // Read sensor data
+    aq.temperature = bme.readTemperature();
+    aq.humidity = bme.readHumidity();
+    aq.pressure = bme.readPressure() / 100.0F;
+    aq.gas_extra = analogRead(MQ135_A);
 
-  if (iaq.read()) {
-    aq.gas = iaq.readGas();
-    aq.gas_resistance = iaq.readGasResistance();
-  }
+    if (iaq.read()) {
+        aq.gas = iaq.readGas();
+        aq.gas_resistance = iaq.readGasResistance();
+    }
 
-  // Prepare sensor data
-  int sum = 0;
-  int len = snprintf(buf, BUFSZ,
-      "cnt=%05d,"
-      "temp=%04.2f,humi=%05.3f,pres=%07.2f,"
-      "gase=%04d,"
-      "gasp=%04d,gasr=%05.2f",
-      counter++,
-      aq.temperature, aq.humidity, aq.pressure,
-      aq.gas_extra,
-      aq.gas, aq.gas_resistance
-  );
+    // Prepare sensor data
+    int sum = 0;
+    int len = snprintf(buf, BUFSZ,
+            "cnt=%05d,"
+            "temp=%04.2f,humi=%05.3f,pres=%07.2f,"
+            "gase=%04d,"
+            "gasp=%04d,gasr=%05.2f",
+            counter++,
+            aq.temperature, aq.humidity, aq.pressure,
+            aq.gas_extra,
+            aq.gas, aq.gas_resistance
+            );
 
-  // Calculate checksum for transmission
-  for (int i=0; i<len; i++) {
-    sum += buf[i]*i;
-  }
-  sum = 0xFF & sum;
-  if (len+11 < BUFSZ) {
-    snprintf(buf+len, BUFSZ-len,
-        ",chk=%03d"
-        "\n\r",
-        sum
-      );
-  }
+    // Calculate checksum for transmission
+    for (int i=0; i<len; i++) {
+        sum += buf[i]*i;
+    }
+    sum = 0xFF & sum;
+    if (len+11 < BUFSZ) {
+        snprintf(buf+len, BUFSZ-len,
+                ",chk=%03d"
+                "\n\r",
+                sum
+                );
+    }
 
-  // Print sensor data
-  Serial.print(buf);
-  Serial1.print(buf);
+    // Print sensor data
+    Serial.print(buf);
+    Serial1.print(buf);
 
-  // Refresh interval
-  delay(100);
+    // Refresh interval
+    delay(100);
 }
