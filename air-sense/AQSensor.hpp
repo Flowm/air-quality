@@ -9,8 +9,8 @@ public:
     float temperature;
     float humidity;
     float pressure;
-    uint16_t gas_extra;
     uint16_t gas;
+    uint16_t gas_extra;
     float gas_resistance;
 
 private:

@@ -5,11 +5,9 @@ const char* AQSensor::format(int counter) {
     int len = snprintf(buf, BUFSZ,
             "cnt=%05d,"
             "temp=%04.2f,humi=%05.3f,pres=%07.2f,"
-            "gase=%04d,"
-            "gasp=%04d,gasr=%05.2f",
+            "gasp=%04d,gasr=%05.0f",
             counter,
             temperature, humidity, pressure,
-            gas_extra,
             gas, gas_resistance
             );
 

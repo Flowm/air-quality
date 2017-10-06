@@ -24,6 +24,7 @@ public:
     }
 
     float readGas() {
+        read();
         return predict;
     }
     float readGasResistance() {
