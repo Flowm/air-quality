@@ -23,9 +23,6 @@
 Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
 Iaq iaq;
 AQSensor aq;
-
-#define BUFSZ 1024
-char buf[BUFSZ];
 int counter = 0;
 
 void setup() {
@@ -58,33 +55,8 @@ void loop() {
         aq.gas_resistance = iaq.readGasResistance();
     }
 
-    // Prepare sensor data
-    int sum = 0;
-    int len = snprintf(buf, BUFSZ,
-            "cnt=%05d,"
-            "temp=%04.2f,humi=%05.3f,pres=%07.2f,"
-            "gase=%04d,"
-            "gasp=%04d,gasr=%05.2f",
-            counter++,
-            aq.temperature, aq.humidity, aq.pressure,
-            aq.gas_extra,
-            aq.gas, aq.gas_resistance
-            );
-
-    // Calculate checksum for transmission
-    for (int i=0; i<len; i++) {
-        sum += buf[i]*i;
-    }
-    sum = 0xFF & sum;
-    if (len+11 < BUFSZ) {
-        snprintf(buf+len, BUFSZ-len,
-                ",chk=%03d"
-                "\n\r",
-                sum
-                );
-    }
-
-    // Print sensor data
+    // Format and print sensor data
+    const char* buf = aq.format(counter++);
     Serial.print(buf);
     Serial1.print(buf);
 
