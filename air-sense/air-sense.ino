@@ -10,6 +10,7 @@
  *
  */
 
+#include "AQSensor.hpp"
 #include <Adafruit_BME280.h>
 #include "ams_iaq.h"
 
@@ -21,13 +22,7 @@
 
 Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK);
 Iaq iaq;
-
-struct sensor_data {
-  float temp;
-  float humidity;
-  float pressure;
-  int mq135;
-} sdata;
+AQSensor aq;
 
 #define BUFSZ 1024
 char buf[BUFSZ];
@@ -53,21 +48,27 @@ void setup() {
 
 void loop() {
   // Read sensor data
-  sdata.temp = bme.readTemperature();
-  sdata.humidity = bme.readHumidity();
-  sdata.pressure = bme.readPressure() / 100.0F;
-  sdata.mq135 = analogRead(MQ135_A);
-  iaq.read();
+  aq.temperature = bme.readTemperature();
+  aq.humidity = bme.readHumidity();
+  aq.pressure = bme.readPressure() / 100.0F;
+  aq.gas_extra = analogRead(MQ135_A);
+
+  if (iaq.read()) {
+    aq.gas = iaq.readGas();
+    aq.gas_resistance = iaq.readGasResistance();
+  }
 
   // Prepare sensor data
   int sum = 0;
   int len = snprintf(buf, BUFSZ,
-      "counter=%05d,"
-      "temperature=%04.2f,humidity=%05.3f,pressure=%07.2f,mq135=%04d,"
-      "iaqs=%02d,co2=%05d,tvoc=%05d",
+      "cnt=%05d,"
+      "temp=%04.2f,humi=%05.3f,pres=%07.2f,"
+      "gase=%04d,"
+      "gasp=%04d,gasr=%05.2f",
       counter++,
-      sdata.temp, sdata.humidity, sdata.pressure, sdata.mq135,
-      iaq.status, iaq.predict, iaq.tvoc
+      aq.temperature, aq.humidity, aq.pressure,
+      aq.gas_extra,
+      aq.gas, aq.gas_resistance
   );
 
   // Calculate checksum for transmission
