@@ -1,0 +1,21 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+# Top-most EditorConfig file
+root = true
+
+# Default for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Default indention
+[*]
+indent_size = 4
+indent_style = space
+
+# GNU make
+# https://www.gnu.org/software/make/manual/html_node/Recipe-Syntax.html
+[{Makefile,*.mak}]
+indent_style = tab
