@@ -65,6 +65,7 @@ void loop() {
     aq.pressure = bme.readPressure() / 100.0F;
     aq.gas = gas->readGas();
     aq.gas_resistance = gas->readGasResistance();
+    aq.readAnalogSensors();
 
     // Format and print sensor data
     const char* buf = aq.format(counter++);
