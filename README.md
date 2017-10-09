@@ -11,15 +11,32 @@ In the sensing unit a [Teensy] microcontroller reads the sensor data from the co
 ### Hardware
 The following sensors are used:
 
+#### Version 1
+Original version with dedicated VOC MEMS sensor
+
 | Category            | Name                 | Provides                             | Price |
 |---------------------|----------------------|--------------------------------------|------:|
 | Core                | [Teensy 3.2][Teensy] | Microcontroller                      |  ~24€ |
 | Communication       | [HM-11]              | Bluethooth                           |   ~5€ |
 | Sensors             | [BME280]             | Temperature, Pressure, Humidity      |  ~14€ |
 | Sensors             | [iAQ-core C]         | VOC Sensor                           |  ~33€ |
-| Sensors (optional)  | [MQ135]              | Gas                                  |   ~2€ |
+|                     |                      | **Total**                            |  ~76€ |
+
+#### Version 2
+Updated version with recently released BME680 sensor
+
+| Category            | Name                 | Provides                             | Price |
+|---------------------|----------------------|--------------------------------------|------:|
+| Core                | [Teensy 3.2][Teensy] | Microcontroller                      |  ~24€ |
+| Communication       | [HM-11]              | Bluethooth                           |   ~5€ |
+| Sensors             | [BME680]             | Temperature, Pressure, Humidity, VOC |  ~15€ |
+|                     |                      | **Total**                            |  ~44€ |
+
+#### Additional optional sensors
+| Category            | Name                 | Provides                             | Price |
+|---------------------|----------------------|--------------------------------------|------:|
+| Sensors (optional)  | [MQ135]              | Analog Gas Sensor                    |   ~2€ |
 | Sensors (optional)  | [SM-PWM-01C]         | Dust Sensor                          |  ~14€ |
-| Sensors (NA)        | [BME680]             | Temperature, Pressure, Humidity, VOC |    NA |
 
 ### Wiring
 A Fritzing sketch documenting the layout of the current hardware prototype is located in `air-sense/wiring`.
