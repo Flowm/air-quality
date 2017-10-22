@@ -32,7 +32,7 @@ const char* AQSensor::format(int counter) {
     }
     sum = 0xFF & sum;
     if (len+11 < BUFSZ) {
-        snprintf(buf+len, BUFSZ-len, ",chk=%03d\n\r", sum);
+        snprintf(buf+len, BUFSZ-len, ",chk=%03d\r\n", sum);
     }
     return &buf[0];
 }
