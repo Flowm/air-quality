@@ -3,6 +3,7 @@
 #define APIN_MQ135 A0
 #define APIN_LIGHT A1
 
+#define LINESZ 1024
 #define BUFSZ 1024
 
 class AQSensor {
@@ -14,13 +15,12 @@ public:
     float temperature;
     float humidity;
     float pressure;
-    uint16_t gas;
-    uint16_t gas_extra;
     float gas_resistance;
 
     uint16_t analog_mq135;
     uint16_t analog_light;
 
 private:
+    char line[BUFSZ];
     char buf[BUFSZ];
 };

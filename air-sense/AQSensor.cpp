@@ -12,27 +12,31 @@ void AQSensor::readAnalogSensors() {
 }
 
 const char* AQSensor::format(int counter) {
-    int sum = 0;
-    int len = snprintf(buf, BUFSZ,
-            "cnt=%05d"
-            ",temp=%04.2f,humi=%05.3f,pres=%07.2f"
-            ",gasp=%04d,gasr=%05.0f"
-            ",amq=%04d"
-            ",ali=%04d",
-            counter,
-            temperature, humidity, pressure,
-            gas, gas_resistance,
-            analog_mq135,
-            analog_light
-            );
+    line[0] = '\0';
+    snprintf(buf, BUFSZ, "cnt=%05d", counter);
+    strlcat(line, buf, LINESZ);
+
+    snprintf(buf, BUFSZ, ",temp=%04.2f,humi=%05.3f,pres=%07.2f", temperature, humidity, pressure);
+    strlcat(line, buf, LINESZ);
+
+    snprintf(buf, BUFSZ, ",gasr=%05.0f", gas_resistance);
+    strlcat(line, buf, LINESZ);
+
+    snprintf(buf, BUFSZ, ",amq=%04d", analog_mq135);
+    strlcat(line, buf, LINESZ);
+
+    snprintf(buf, BUFSZ, ",ali=%04d", analog_light);
+    strlcat(line, buf, LINESZ);
 
     // Calculate checksum for transmission
-    for (int i=0; i<len; i++) {
-        sum += buf[i]*i;
+    int sum = 0;
+    for (size_t i = 0; i < strlen(buf); i++) {
+        sum += line[i]*i;
     }
     sum = 0xFF & sum;
-    if (len+11 < BUFSZ) {
-        snprintf(buf+len, BUFSZ-len, ",chk=%03d\r\n", sum);
-    }
-    return &buf[0];
+
+    snprintf(buf, BUFSZ, ",chk=%03d\r\n", sum);
+    strlcat(line, buf, LINESZ);
+
+    return &line[0];
 }
