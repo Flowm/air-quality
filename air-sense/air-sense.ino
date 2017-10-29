@@ -57,13 +57,13 @@ void setup() {
 void loop() {
 #ifdef BME680
     bme.startConvert();
-    delay(1);
+    delay(100);
+    bme.update();
 #endif // BME680
 
     aq.temperature = bme.readTemperature();
     aq.humidity = bme.readHumidity();
     aq.pressure = bme.readPressure() / 100.0F;
-    aq.gas = gas->readGas();
     aq.gas_resistance = gas->readGasResistance();
     aq.readAnalogSensors();
 
