@@ -45,11 +45,15 @@ void AQSensor::readSensors() {
     humidity = bme.readHumidity();
     pressure = bme.readPressure() / 100.0F;
     gas_resistance = gas->readGasResistance();
-    analog_mq135 = analogRead(APIN_MQ135);
-    analog_light = analogRead(APIN_LIGHT);
+
+    readAnalogSensors();
 }
 
 void AQSensor::readAnalogSensors() {
+#ifdef MQ135
+    analog_mq135 = analogRead(APIN_MQ135);
+#endif
+    analog_light = analogRead(APIN_LIGHT);
 }
 
 const char* AQSensor::format(int counter) {

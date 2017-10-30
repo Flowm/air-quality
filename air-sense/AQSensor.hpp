@@ -3,6 +3,9 @@
 // Select between BME680 and BME280 + IAQ
 #define BME680
 
+// Enable MQ135 analog gas sensor
+//#define MQ135
+
 #define LINESZ 1024
 #define BUFSZ 1024
 
