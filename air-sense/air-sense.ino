@@ -6,9 +6,15 @@
  * - iAQ-core (CO2, TVOC)
  * Or alternatively:
  * - BME680 (temperature, humidity, pressure, gas)
+ *
+ * Required libs:
+ * - duff2013/Snooze
+ * - DFRobot/DFRobot_BME680
+ * - adafruit/Adafruit_Sensor
+ * - adafruit/Adafruit_BME280_Library
+ *
  * Data is read periodically by a Teensy 3.2 and then printed over serial
  * console to USB and HM-11 BLE module.
- *
  */
 
 #include <Snooze.h>
