@@ -13,12 +13,16 @@
 
 #include "AQSensor.hpp"
 
+#define SER1 Serial1 // Serial port 1
+#define SER2 Serial2 // Serial port 2
+//#define SER2 Serial // USB Serial
+
 AQSensor aq;
 int counter = 0;
 
 void setup() {
-    Serial.begin(9600);
-    Serial1.begin(9600);
+    SER1.begin(9600);
+    SER2.begin(9600);
     delay(2000);
     aq.initSensors();
 }
@@ -26,10 +30,9 @@ void setup() {
 void loop() {
     aq.readSensors();
 
-    // Format and print sensor data
     const char* buf = aq.format(counter++);
-    Serial.print(buf);
-    Serial1.print(buf);
+    SER1.print(buf);
+    SER2.print(buf);
 
     // Refresh interval
     delay(100);
