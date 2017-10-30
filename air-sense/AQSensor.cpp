@@ -1,14 +1,55 @@
 #include "AQSensor.hpp"
 
+#ifdef BME680
+#include <DFRobot_BME680_I2C.h>
+#define BME_ADDR 0x77
+DFRobot_BME680_I2C bme(BME_ADDR);
+DFRobot_BME680_I2C* gas = &bme;
+
+# else // BME280 + IAQ
+#include <Adafruit_BME280.h>
+#include "ams_iaq.h"
+
+Adafruit_BME280 bme(10, 11, 12, 13);
+Iaq iaq;
+Iaq* gas = &iaq;
+#endif
+
+#define APIN_MQ135 A0
+#define APIN_LIGHT A1
+
 AQSensor::AQSensor() {
     pinMode(APIN_MQ135, INPUT);
     pinMode(APIN_LIGHT, INPUT);
     analogReadAveraging(32);
 }
 
+void AQSensor::initSensors() {
+    Serial.println("BME init");
+    if (!bme.begin()) {
+        while (1) {
+            Serial.println("BME init failed");
+            delay(1000);
+        }
+    }
+}
+
+void AQSensor::readSensors() {
+#ifdef BME680
+    bme.startConvert();
+    delay(100);
+    bme.update();
+#endif // BME680
+
+    temperature = bme.readTemperature();
+    humidity = bme.readHumidity();
+    pressure = bme.readPressure() / 100.0F;
+    gas_resistance = gas->readGasResistance();
+    analog_mq135 = analogRead(APIN_MQ135);
+    analog_light = analogRead(APIN_LIGHT);
+}
+
 void AQSensor::readAnalogSensors() {
-  analog_mq135 = analogRead(APIN_MQ135);
-  analog_light = analogRead(APIN_LIGHT);
 }
 
 const char* AQSensor::format(int counter) {
