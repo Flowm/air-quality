@@ -11,18 +11,22 @@
  *
  */
 
+#include <Snooze.h>
 #include "AQSensor.hpp"
 
 #define SER1 Serial1 // Serial port 1
-#define SER2 Serial2 // Serial port 2
-//#define SER2 Serial // USB Serial
+//#define SERU Serial  // USB Serial
 
+SnoozeTimer timer;
+SnoozeBlock config(timer);
 AQSensor aq;
 int counter = 0;
 
 void setup() {
     SER1.begin(9600);
-    SER2.begin(9600);
+#ifdef SERU
+    SERU.begin(9600);
+#endif
     delay(2000);
     aq.initSensors();
 }
@@ -32,8 +36,13 @@ void loop() {
 
     const char* buf = aq.format(counter++);
     SER1.print(buf);
-    SER2.print(buf);
 
     // Refresh interval
-    delay(100);
+#ifdef SERU
+    SERU.print(buf);
+    delay(500);
+#else
+    timer.setTimer(500);
+    Snooze.deepSleep(config);
+#endif
 }
