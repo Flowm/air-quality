@@ -58,7 +58,7 @@ void AQSensor::readAnalogSensors() {
 
 const char* AQSensor::format(int counter) {
     line[0] = '\0';
-    snprintf(buf, BUFSZ, "cnt=%05d", counter);
+    snprintf(buf, BUFSZ, "cnt=%05u", counter);
     strlcat(line, buf, LINESZ);
 
     if (temperature) {
@@ -72,23 +72,23 @@ const char* AQSensor::format(int counter) {
     }
 
     if (analog_mq135) {
-        snprintf(buf, BUFSZ, ",amq=%04d", analog_mq135);
+        snprintf(buf, BUFSZ, ",amq=%04u", analog_mq135);
         strlcat(line, buf, LINESZ);
     }
 
     if (analog_light) {
-        snprintf(buf, BUFSZ, ",ali=%04d", analog_light);
+        snprintf(buf, BUFSZ, ",ali=%04u", analog_light);
         strlcat(line, buf, LINESZ);
     }
 
     // Calculate checksum for transmission
-    int sum = 0;
-    for (size_t i = 0; i < strlen(buf); i++) {
-        sum += line[i]*i;
+    unsigned sum = 0;
+    for (size_t i = 0; i < strlen(line); i++) {
+        sum += line[i] * (i+1);
     }
     sum = 0xFF & sum;
 
-    snprintf(buf, BUFSZ, ",chk=%03d\r\n", sum);
+    snprintf(buf, BUFSZ, ",chk=%03u\r\n", sum);
     strlcat(line, buf, LINESZ);
 
     return &line[0];
