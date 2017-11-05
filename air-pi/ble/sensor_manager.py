@@ -22,7 +22,8 @@ class SensorManager:
 
     def __parse_raw_data(self, raw_data):
         data = raw_data.strip()
-        print("New data received -> {}".format(data.decode()))
+        if self.on_new_data:
+            self.on_new_data(data.decode())
         data = data.split(',')
         for element in data:
             (key, value) = element.split('=')
