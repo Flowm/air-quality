@@ -6,8 +6,8 @@
 // Enable MQ135 analog gas sensor
 //#define MQ135
 
-#define LINESZ 1024
-#define BUFSZ 1024
+#define LINESZ 256
+#define BUFSZ 64
 
 class AQSensor {
 public:
@@ -18,7 +18,7 @@ public:
     const char* format(int counter=0);
 
 private:
-    char line[BUFSZ];
+    char line[LINESZ];
     char buf[BUFSZ];
 
     float temperature;
