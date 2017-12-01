@@ -6,6 +6,9 @@
 DFRobot_BME680_I2C bme(BME_ADDR);
 DFRobot_BME680_I2C* gas = &bme;
 
+#include "OWTemp.hpp"
+OWTemp ow(9);
+
 # else // BME280 + IAQ
 #include <Adafruit_BME280.h>
 #include "ams_iaq.h"
@@ -32,6 +35,7 @@ void AQSensor::initSensors() {
             delay(1000);
         }
     }
+    ow.search();
 }
 
 void AQSensor::readSensors() {
@@ -47,6 +51,8 @@ void AQSensor::readSensors() {
     gas_resistance = gas->readGasResistance();
 
     readAnalogSensors();
+
+    ds_temperature = ow.get();
 }
 
 void AQSensor::readAnalogSensors() {
@@ -78,6 +84,11 @@ const char* AQSensor::format(int counter) {
 
     if (analog_light) {
         snprintf(buf, BUFSZ, ",ali=%04u", analog_light);
+        strlcat(line, buf, LINESZ);
+    }
+
+    if (ds_temperature) {
+        snprintf(buf, BUFSZ, ",dst=%04.2f", ds_temperature);
         strlcat(line, buf, LINESZ);
     }
 

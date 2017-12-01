@@ -28,4 +28,6 @@ private:
 
     uint16_t analog_mq135;
     uint16_t analog_light;
+
+    float ds_temperature;
 };
