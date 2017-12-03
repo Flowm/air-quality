@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 #from bluetooth import *
 #from bluetooth.ble import DiscoveryService, GATTRequester, GATTResponse
 #import pygatt
