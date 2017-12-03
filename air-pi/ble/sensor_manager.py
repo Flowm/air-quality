@@ -1,7 +1,3 @@
-#!/usr/bin/env python3
-
-import functools
-import sys
 import time
 
 

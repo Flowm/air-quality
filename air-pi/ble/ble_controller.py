@@ -1,11 +1,4 @@
-#!/usr/bin/env python3
-
-#from bluetooth import *
-#from bluetooth.ble import DiscoveryService, GATTRequester, GATTResponse
-#import pygatt
-
 from bluepy import btle
-from sensor_manager import SensorManager
 
 
 class BleDelegate(btle.DefaultDelegate):
@@ -49,30 +42,3 @@ class BleController:
             self.connected_device.waitForNotifications(timeout)
             if not forever:
                 return
-
-
-# Pygatt example
-#gatt = pygatt.GATTToolBackend()
-
-#gatt.scan()
-# try:
-#     gatt.start(reset_on_start=True)
-#     # gatt.reset()
-#     device = gatt.connect(sensor_addr)
-#     chars = device.discover_characteristics()
-#     print(chars)
-#     # device.subscribe(sensor_uuid, handle_data)
-#
-#     while True:
-#         # data = device.char_read(0x12)
-#         data = device.char_read(sensor_uuid)
-#         print(data)
-#         # time.sleep(10)
-# except Exception as e:
-#     print(e)
-# finally:
-#     gatt.stop()
-#
-# print("Ended")
-
-

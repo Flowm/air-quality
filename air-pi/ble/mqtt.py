@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-
 import paho.mqtt.client as mqtt
-import re
-import subprocess
-import sys
-import time
 
 UPDATE_RATE = 1  # seconds
 CLIENT_ID = "eac9c9686e75475c3286f5c7224ef3d359b30cf3"
