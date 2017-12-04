@@ -39,6 +39,9 @@ class BleController:
 
     def loop(self, forever=True, timeout=0.1):
         while True:
-            self.connected_device.waitForNotifications(timeout)
+            try:
+                self.connected_device.waitForNotifications(timeout)
+            except btle.BTLEException as e:
+                return e
             if not forever:
-                return
+                return None

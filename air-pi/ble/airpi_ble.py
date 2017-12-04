@@ -32,15 +32,25 @@ def on_valid_data(data):
 def on_sensor_data(sensor, data):
     mqtt.publish(TOPIC_ENVIRONMENT + sensor + TOPIC_GET, data)
 
+def connect():
+    while not ble.connect(SENSOR_ADDR):
+        print("Will retry connection...")
+        time.sleep(5)
+
 
 def main():
     ble.set_read_delegate(BleDelegate(SENSOR_HANDLE, on_ble_data))
     sensor_manager.on_new_data = on_valid_data
     sensor_manager.on_sensor_data = on_sensor_data
-    while not ble.connect(SENSOR_ADDR):
-        print("Will retry connection...")
-        time.sleep(5)
-    ble.loop()
+    connect()
+    while True:
+        result = ble.loop()
+        if not result:
+            print("Set to not run forever. Shutting down down airpi_ble")
+            break
+        else:
+            print("Error {} occurred".format(result.code))
+            connect()
 
 
 if __name__ == '__main__':
