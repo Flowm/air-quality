@@ -1,14 +1,9 @@
 #include "AQManager.hpp"
 
-#ifdef BME680
-#include <DFRobot_BME680_I2C.h>
-#define BME_ADDR 0x77
-DFRobot_BME680_I2C bme(BME_ADDR);
-DFRobot_BME680_I2C* gas = &bme;
-
 #include "OWTemp.hpp"
 OWTemp ow(9);
 
+#ifdef BME680
 # else // BME280 + IAQ
 #include <Adafruit_BME280.h>
 #include "ams_iaq.h"
@@ -27,31 +22,14 @@ AQManager::AQManager() {
     analogReadAveraging(32);
 }
 
-void AQManager::initSensors() {
-    Serial.println("BME init");
-    if (!bme.begin()) {
-        while (1) {
-            Serial.println("BME init failed");
-            delay(1000);
-        }
-    }
+void AQManager::init() {
+    bme.init();
     ow.search();
 }
 
-void AQManager::readSensors() {
-#ifdef BME680
-    bme.startConvert();
-    delay(100);
-    bme.update();
-#endif // BME680
-
-    temperature = bme.readTemperature();
-    humidity = bme.readHumidity();
-    pressure = bme.readPressure() / 100.0F;
-    gas_resistance = gas->readGasResistance();
-
+void AQManager::read() {
+    bme.read();
     readAnalogSensors();
-
     ds_temperature = ow.get();
 }
 
@@ -67,13 +45,16 @@ const char* AQManager::format(int counter) {
     snprintf(buf, BUFSZ, "cnt=%05u", counter);
     strlcat(line, buf, LINESZ);
 
-    if (temperature) {
-        snprintf(buf, BUFSZ, ",temp=%04.2f,humi=%05.3f,pres=%07.2f", temperature, humidity, pressure);
+    if (bme.valid()) {
+        snprintf(buf, BUFSZ, ",temp=%04.2f,humi=%05.3f,pres=%07.2f",
+                bme.temperature(),
+                bme.humidity(),
+                bme.pressure());
         strlcat(line, buf, LINESZ);
     }
 
-    if (gas_resistance) {
-        snprintf(buf, BUFSZ, ",gasr=%05.0f", gas_resistance);
+    if (bme.valid()) {
+        snprintf(buf, BUFSZ, ",gasr=%05.0f", bme.gasresistance());
         strlcat(line, buf, LINESZ);
     }
 

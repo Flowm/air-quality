@@ -3,6 +3,10 @@
 // Select between BME680 and BME280 + IAQ
 #define BME680
 
+#ifdef BME680
+#include "SenBME680.hpp"
+#endif
+
 // Enable MQ135 analog gas sensor
 //#define MQ135
 
@@ -12,19 +16,16 @@
 class AQManager {
 public:
     AQManager();
-    void initSensors();
-    void readSensors();
+    void init();
+    void read();
     void readAnalogSensors();
     const char* format(int counter=0);
 
 private:
+    SenBME680 bme;
+
     char line[LINESZ];
     char buf[BUFSZ];
-
-    float temperature;
-    float humidity;
-    float pressure;
-    float gas_resistance;
 
     uint16_t analog_mq135;
     uint16_t analog_light;

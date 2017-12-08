@@ -37,11 +37,11 @@ void setup() {
     SERU.begin(9600);
 #endif
     delay(2000);
-    aq.initSensors();
+    aq.init();
 }
 
 void loop() {
-    aq.readSensors();
+    aq.read();
 
     const char* buf = aq.format(counter++);
     SER1.print(buf);
