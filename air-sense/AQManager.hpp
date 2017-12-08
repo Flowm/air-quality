@@ -5,11 +5,11 @@
 
 #ifdef BME680
 #include "SenBME680.hpp"
-#include "SenDS18B20.hpp"
+#else // BME280 + IAQ
+#include "SenBME280IAQ.hpp"
 #endif
 
-// Enable MQ135 analog gas sensor
-//#define MQ135
+#include "SenDS18B20.hpp"
 
 #define LINESZ 256
 #define BUFSZ 64
@@ -23,7 +23,11 @@ public:
     const char* format(int counter=0);
 
 private:
+#ifdef BME680
     SenBME680 bme;
+#else // BME280 + IAQ
+    SenBME280IAQ bme;
+#endif
     SenDS18B20 ow;
 
     char line[LINESZ];

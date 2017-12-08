@@ -27,13 +27,16 @@ public:
         read();
         return predict;
     }
+
     float readGasResistance() {
         return resistance;
     }
+
     float readGasTvoc() {
         return tvoc;
     }
 
+private:
     uint16_t predict;
     int32_t resistance;
     uint16_t tvoc;

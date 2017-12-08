@@ -1,15 +1,5 @@
 #include "AQManager.hpp"
 
-#ifdef BME680
-#else
-#include <Adafruit_BME280.h>
-#include "ams_iaq.h"
-
-Adafruit_BME280 bme(10, 11, 12, 13);
-Iaq iaq;
-Iaq* gas = &iaq;
-#endif
-
 #define APIN_MQ135 A0
 #define APIN_LIGHT A1
 
