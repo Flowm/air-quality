@@ -17,14 +17,17 @@
  * console to USB and HM-11 BLE module.
  */
 
-#include <Snooze.h>
 #include "AQSensor.hpp"
 
 #define SER1 Serial1 // Serial port 1
 //#define SERU Serial  // USB Serial
 
+#ifndef SERU
+#include <Snooze.h>
 SnoozeTimer timer;
 SnoozeBlock config(timer);
+#endif
+
 AQSensor aq;
 int counter = 0;
 
