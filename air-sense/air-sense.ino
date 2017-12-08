@@ -20,7 +20,7 @@
 #include "AQManager.hpp"
 
 #define SER1 Serial1 // Serial port 1
-//#define SERU Serial  // USB Serial
+#define SERU Serial  // USB Serial
 
 #ifndef SERU
 #include <Snooze.h>

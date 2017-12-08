@@ -1,12 +1,10 @@
-#include "OWTemp.hpp"
+#include "SenDS18B20.hpp"
 
-void OWTemp::search(void) {
+int SenDS18B20::init() {
     if (!ds.search(addr)) {
-        Serial.println("No more addresses.");
-        Serial.println();
+        Serial.println("No more addresses");
         ds.reset_search();
-        delay(250);
-        return;
+        return 1;
     }
 
     Serial.print("ROM =");
@@ -17,14 +15,15 @@ void OWTemp::search(void) {
 
     if (OneWire::crc8(addr, 7) != addr[7]) {
         Serial.println("CRC is not valid!");
-        return;
+        return 1;
     }
     Serial.println();
+
+    _valid = true;
+    return 0;
 }
 
-float OWTemp::get(void) {
-    float celsius;
-
+int SenDS18B20::read() {
     ds.reset();
     ds.select(addr);
     ds.write(0x44, 1);
@@ -45,6 +44,7 @@ float OWTemp::get(void) {
     else if (cfg == 0x20) raw = raw & ~3; // 10 bit res, 187.5 ms
     else if (cfg == 0x40) raw = raw & ~1; // 11 bit res, 375 ms
 
-    celsius = (float)raw / 16.0;
-    return celsius;
+    _temperature = (float)raw / 16.0;
+
+    return 0;
 }

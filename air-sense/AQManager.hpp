@@ -5,6 +5,7 @@
 
 #ifdef BME680
 #include "SenBME680.hpp"
+#include "SenDS18B20.hpp"
 #endif
 
 // Enable MQ135 analog gas sensor
@@ -23,12 +24,11 @@ public:
 
 private:
     SenBME680 bme;
+    SenDS18B20 ow;
 
     char line[LINESZ];
     char buf[BUFSZ];
 
     uint16_t analog_mq135;
     uint16_t analog_light;
-
-    float ds_temperature;
 };

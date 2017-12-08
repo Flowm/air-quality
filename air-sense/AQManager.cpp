@@ -1,10 +1,7 @@
 #include "AQManager.hpp"
 
-#include "OWTemp.hpp"
-OWTemp ow(9);
-
 #ifdef BME680
-# else // BME280 + IAQ
+#else
 #include <Adafruit_BME280.h>
 #include "ams_iaq.h"
 
@@ -24,13 +21,13 @@ AQManager::AQManager() {
 
 void AQManager::init() {
     bme.init();
-    ow.search();
+    ow.init();
 }
 
 void AQManager::read() {
     bme.read();
+    ow.read();
     readAnalogSensors();
-    ds_temperature = ow.get();
 }
 
 void AQManager::readAnalogSensors() {
@@ -68,8 +65,8 @@ const char* AQManager::format(int counter) {
         strlcat(line, buf, LINESZ);
     }
 
-    if (ds_temperature) {
-        snprintf(buf, BUFSZ, ",dst=%04.2f", ds_temperature);
+    if (ow.valid()) {
+        snprintf(buf, BUFSZ, ",dst=%04.2f", ow.temperature());
         strlcat(line, buf, LINESZ);
     }
 
