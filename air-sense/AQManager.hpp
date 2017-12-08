@@ -9,9 +9,9 @@
 #define LINESZ 256
 #define BUFSZ 64
 
-class AQSensor {
+class AQManager {
 public:
-    AQSensor();
+    AQManager();
     void initSensors();
     void readSensors();
     void readAnalogSensors();

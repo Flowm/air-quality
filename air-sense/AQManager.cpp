@@ -1,4 +1,4 @@
-#include "AQSensor.hpp"
+#include "AQManager.hpp"
 
 #ifdef BME680
 #include <DFRobot_BME680_I2C.h>
@@ -21,13 +21,13 @@ Iaq* gas = &iaq;
 #define APIN_MQ135 A0
 #define APIN_LIGHT A1
 
-AQSensor::AQSensor() {
+AQManager::AQManager() {
     pinMode(APIN_MQ135, INPUT);
     pinMode(APIN_LIGHT, INPUT);
     analogReadAveraging(32);
 }
 
-void AQSensor::initSensors() {
+void AQManager::initSensors() {
     Serial.println("BME init");
     if (!bme.begin()) {
         while (1) {
@@ -38,7 +38,7 @@ void AQSensor::initSensors() {
     ow.search();
 }
 
-void AQSensor::readSensors() {
+void AQManager::readSensors() {
 #ifdef BME680
     bme.startConvert();
     delay(100);
@@ -55,14 +55,14 @@ void AQSensor::readSensors() {
     ds_temperature = ow.get();
 }
 
-void AQSensor::readAnalogSensors() {
+void AQManager::readAnalogSensors() {
 #ifdef MQ135
     analog_mq135 = analogRead(APIN_MQ135);
 #endif
     analog_light = analogRead(APIN_LIGHT);
 }
 
-const char* AQSensor::format(int counter) {
+const char* AQManager::format(int counter) {
     line[0] = '\0';
     snprintf(buf, BUFSZ, "cnt=%05u", counter);
     strlcat(line, buf, LINESZ);
