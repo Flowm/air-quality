@@ -19,11 +19,14 @@ int SenDS18B20::init() {
     }
     Serial.println();
 
-    _valid = true;
+    setId(IDSenDS18B20);
     return 0;
 }
 
 int SenDS18B20::read() {
+    if (!getId()) {
+        return 1;
+    }
     ds.reset();
     ds.select(addr);
     ds.write(0x44, 1);

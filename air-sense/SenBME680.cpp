@@ -3,7 +3,7 @@
 int SenBME680::init() {
     Serial.println("BME init");
     if (!bme.begin()) {
-        _valid = true;
+        setId(IDSenBME680);
         return 0;
     }
     return 1;

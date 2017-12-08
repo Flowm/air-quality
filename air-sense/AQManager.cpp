@@ -1,30 +1,15 @@
 #include "AQManager.hpp"
 
-#define APIN_MQ135 A0
-#define APIN_LIGHT A1
-
-AQManager::AQManager() {
-    pinMode(APIN_MQ135, INPUT);
-    pinMode(APIN_LIGHT, INPUT);
-    analogReadAveraging(32);
-}
-
 void AQManager::init() {
     bme.init();
-    ow.init();
+    ds.init();
+    an.init();
 }
 
 void AQManager::read() {
     bme.read();
-    ow.read();
-    readAnalogSensors();
-}
-
-void AQManager::readAnalogSensors() {
-#ifdef MQ135
-    analog_mq135 = analogRead(APIN_MQ135);
-#endif
-    analog_light = analogRead(APIN_LIGHT);
+    ds.read();
+    an.read();
 }
 
 const char* AQManager::format(int counter) {
@@ -32,7 +17,7 @@ const char* AQManager::format(int counter) {
     snprintf(buf, BUFSZ, "cnt=%05u", counter);
     strlcat(line, buf, LINESZ);
 
-    if (bme.valid()) {
+    if (bme.getId()) {
         snprintf(buf, BUFSZ, ",temp=%04.2f,humi=%05.3f,pres=%07.2f",
                 bme.temperature(),
                 bme.humidity(),
@@ -40,23 +25,23 @@ const char* AQManager::format(int counter) {
         strlcat(line, buf, LINESZ);
     }
 
-    if (bme.valid()) {
+    if (bme.getId()) {
         snprintf(buf, BUFSZ, ",gasr=%05.0f", bme.gasresistance());
         strlcat(line, buf, LINESZ);
     }
 
-    if (analog_mq135) {
-        snprintf(buf, BUFSZ, ",amq=%04u", analog_mq135);
+    if (ds.getId()) {
+        snprintf(buf, BUFSZ, ",dst=%04.2f", ds.temperature());
         strlcat(line, buf, LINESZ);
     }
 
-    if (analog_light) {
-        snprintf(buf, BUFSZ, ",ali=%04u", analog_light);
+    if (an.getId(IDSenALight)) {
+        snprintf(buf, BUFSZ, ",ali=%04u", an.light());
         strlcat(line, buf, LINESZ);
     }
 
-    if (ow.valid()) {
-        snprintf(buf, BUFSZ, ",dst=%04.2f", ow.temperature());
+    if (an.getId(IDSenAMQ135)) {
+        snprintf(buf, BUFSZ, ",amq=%04u", an.mq135());
         strlcat(line, buf, LINESZ);
     }
 

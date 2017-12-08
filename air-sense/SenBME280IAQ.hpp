@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Adafruit_BME280.h>
-#include "ams_iaq.h"
+#include "SenIAQ.hpp"
 
 #include "ISensor.hpp"
 

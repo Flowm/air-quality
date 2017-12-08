@@ -1,6 +1,8 @@
+#pragma once
+
 #include "Arduino.h"
 
-// Select between BME680 and BME280 + IAQ
+// Comment the line below to use BME280 + IAQ instead of BME680
 #define BME680
 
 #ifdef BME680
@@ -10,16 +12,16 @@
 #endif
 
 #include "SenDS18B20.hpp"
+#include "SenAnalog.hpp"
 
 #define LINESZ 256
 #define BUFSZ 64
 
 class AQManager {
 public:
-    AQManager();
     void init();
     void read();
-    void readAnalogSensors();
+
     const char* format(int counter=0);
 
 private:
@@ -28,11 +30,9 @@ private:
 #else // BME280 + IAQ
     SenBME280IAQ bme;
 #endif
-    SenDS18B20 ow;
+    SenDS18B20 ds;
+    SenAnalog an;
 
     char line[LINESZ];
     char buf[BUFSZ];
-
-    uint16_t analog_mq135;
-    uint16_t analog_light;
 };
