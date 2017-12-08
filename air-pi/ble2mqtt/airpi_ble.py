@@ -1,4 +1,4 @@
-#!/usr/bin/sudo python3
+#!/usr/bin/env python3
 
 from sensor_manager import SensorManager
 from ble_controller import BleController, BleDelegate
@@ -31,6 +31,7 @@ def on_valid_data(data):
 
 def on_sensor_data(sensor, data):
     mqtt.publish(TOPIC_ENVIRONMENT + sensor + TOPIC_GET, data)
+
 
 def connect():
     while not ble.connect(SENSOR_ADDR):
