@@ -17,10 +17,10 @@
  * console to USB and HM-11 BLE module.
  */
 
-#include "AQSensor.hpp"
+#include "AQManager.hpp"
 
 #define SER1 Serial1 // Serial port 1
-//#define SERU Serial  // USB Serial
+#define SERU Serial  // USB Serial
 
 #ifndef SERU
 #include <Snooze.h>
@@ -28,7 +28,7 @@ SnoozeTimer timer;
 SnoozeBlock config(timer);
 #endif
 
-AQSensor aq;
+AQManager aq;
 int counter = 0;
 
 void setup() {
@@ -37,11 +37,11 @@ void setup() {
     SERU.begin(9600);
 #endif
     delay(2000);
-    aq.initSensors();
+    aq.init();
 }
 
 void loop() {
-    aq.readSensors();
+    aq.read();
 
     const char* buf = aq.format(counter++);
     SER1.print(buf);
