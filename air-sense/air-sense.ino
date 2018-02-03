@@ -18,7 +18,6 @@
  */
 
 #include "AQManager.hpp"
-#include "src/bluefruit/BluefruitController.hpp"
 
 #define SER1 Serial1 // Serial port 1
 #define SERU Serial  // USB Serial
@@ -30,46 +29,42 @@ SnoozeBlock config(timer);
 #endif
 
 #ifdef _VARIANT_ARDUINO_ZERO_
+#define BLUEFRUIT
+#include "src/bluefruit/BluefruitController.hpp"
 BluefruitController ble;
 #endif
 
 AQManager aq;
 int counter = 0;
+const int refreshInterval = 500;
 
 void setup() {
     SER1.begin(9600);
 #ifdef SERU
     SERU.begin(9600);
 #endif
-    delay(2000);
-#ifdef _VARIANT_ARDUINO_ZERO_
+#ifdef BLUEFRUIT
     ble.setup();
     ble.factoryReset();
     ble.setName("Bluefruit_m0");
     ble.reset();
 #endif
+    delay(2000);
     aq.init();
-
 }
 
 void loop() {
     aq.read();
-
     const char* buf = aq.format(counter++);
     SER1.print(buf);
-
-    //Bluefruit only execution
-#ifdef _VARIANT_ARDUINO_ZERO_
+#ifdef BLUEFRUIT  // Bluefruit
     ble.sendData(buf);
-#else
-#ifdef SERU
-    //HM-11 module
+    delay(refreshInterval);
+#elif defined(SERU)  // HM-11 module
     SERU.print(buf);
-    delay(500);
-#else
-    // Refresh interval
-    timer.setTimer(500);
+    delay(refreshInterval);
+#else  // Teensy power saving
+    timer.setTimer(refreshInterval);
     Snooze.deepSleep(config);
-#endif
 #endif
 }
