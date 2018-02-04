@@ -40,7 +40,7 @@ void BluefruitController::getAddress(char * buffer) {
   ble.println("AT+BLEGETADDR");
   ble.readline();
   if (strcmp("ERROR", ble.buffer) != 0) {
-    strncpy(buffer, ble.buffer, 20);  
+    strncpy(buffer, ble.buffer, 20);
   } else {
     memset(buffer, 0, 20);
   }
@@ -50,7 +50,7 @@ void BluefruitController::getPeerAddress(char * buffer) {
   ble.println("AT+BLEGETPEERADDR");
   ble.readline();
   if (strcmp("ERROR", ble.buffer) != 0) {
-    strncpy(buffer, ble.buffer, 20);  
+    strncpy(buffer, ble.buffer, 20);
   } else {
     memset(buffer, 0, 20);
   }
@@ -93,6 +93,7 @@ void BluefruitController::iBeacon(uint16_t manufacturerId, const char * uuid, ui
 
 void BluefruitController::eddystone() {
   //TODO: implement
+  error("eddystone function is not implemented");
 }
 
 void BluefruitController::advertise(bool enable) {
@@ -107,7 +108,17 @@ void BluefruitController::advertise(bool enable) {
 }
 
 void BluefruitController::sendData(const char * data) {
+  char output [256];
+  int i=0;
+
   ble.print("AT+BLEUARTTX=");
-  ble.print(data);
-  ble.println("\\r\\n");
+  while (i < 251 && data[i] != '\r') {
+    output[i] = data[i++];
+  }
+  output[i++] = '\\';
+  output[i++] = 'r';
+  output[i++] = '\\';
+  output[i++] = 'n';
+  output[i] = '\0';
+  ble.println(output);
 }
