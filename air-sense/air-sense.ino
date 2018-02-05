@@ -21,6 +21,13 @@
 
 #define SER1 Serial1 // Serial port 1
 #define SERU Serial  // USB Serial
+// Beacon parameters
+#define MANUFACTURER_APPLE         0x4C
+#define BEACON_UUID                "74-27-8B-DA-B6-44-45-20-8F-0C-72-0E-AF-05-99-35"
+// #define BEACON_UUID                "01-12-23-34-45-56-67-78-89-9A-AB-BC-CD-DE-EF-F0"
+#define BEACON_MAJOR               0x00
+#define BEACON_MINOR               0x00
+#define BEACON_RSSI_1M             -54
 
 #ifndef SERU
 #include <Snooze.h>
@@ -47,6 +54,7 @@ void setup() {
     ble.setup();
     ble.factoryReset();
     ble.setName("Bluefruit_m0");
+    ble.iBeacon(MANUFACTURER_APPLE, BEACON_UUID, BEACON_MAJOR, BEACON_MINOR, BEACON_RSSI_1M);
     ble.reset();
 #endif
     delay(2000);

@@ -108,17 +108,21 @@ void BluefruitController::advertise(bool enable) {
 }
 
 void BluefruitController::sendData(const char * data) {
-  char output [256];
-  int i=0;
-
+  char output[256];
+  int i=0, j=0;
+  Serial.println(data);
   ble.print("AT+BLEUARTTX=");
-  while (i < 251 && data[i] != '\r') {
-    output[i] = data[i++];
+  while (data[i] != '\0' && j < 240) { //240 max length allowed by bluetooth buffer
+    if (data[i] == '\r') {
+      output[j++] = '\\';
+      output[j++] = 'r';
+    } else if (data[i] == '\n') {
+      output[j++] = '\\';
+      output[j++] = 'n';
+    } else {
+      output[j++] = data[i];
+    }
+    i++;
   }
-  output[i++] = '\\';
-  output[i++] = 'r';
-  output[i++] = '\\';
-  output[i++] = 'n';
-  output[i] = '\0';
   ble.println(output);
 }
