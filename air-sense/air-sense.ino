@@ -27,7 +27,7 @@ SnoozeTimer timer;
 SnoozeBlock config(timer);
 #endif
 
-#ifdef _VARIANT_ARDUINO_ZERO_
+#ifdef ARDUINO_ARCH_SAMD
 #define BLUEFRUIT
 #include "src/bluefruit/BluefruitController.hpp"
 BluefruitController ble;

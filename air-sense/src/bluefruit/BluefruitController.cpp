@@ -1,3 +1,4 @@
+#ifdef ARDUINO_ARCH_SAMD
 #include "BluefruitController.hpp"
 
 void error(const char * err) {
@@ -134,3 +135,4 @@ void BluefruitController::sendData(const char * data) {
   }
   ble.println(output);
 }
+#endif

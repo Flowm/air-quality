@@ -1,7 +1,9 @@
 #include "SenAnalog.hpp"
 
 int SenAnalog::init() {
+#ifdef TEENSYDUINO
     analogReadAveraging(32);
+#endif
 
 #ifdef APIN_LIGHT
     pinMode(APIN_LIGHT, INPUT);
