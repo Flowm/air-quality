@@ -116,7 +116,7 @@ void BluefruitController::advertise(bool enable) {
 }
 
 void BluefruitController::sendData(const char * data) {
-  char output[256];
+  char output[256] = {0};
   int i=0, j=0;
   Serial.println(data);
   ble.print("AT+BLEUARTTX=");
