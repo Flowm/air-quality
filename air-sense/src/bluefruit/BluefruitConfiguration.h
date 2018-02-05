@@ -54,3 +54,23 @@
 #define BLUEFRUIT_SPI_SCK              13
 #define BLUEFRUIT_SPI_MISO             12
 #define BLUEFRUIT_SPI_MOSI             11
+
+// iBEACON SETTINGS
+// ----------------------------------------------------------------------------------------------
+// The following macros declare the default values used for iBeacon advertising.
+// ----------------------------------------------------------------------------------------------
+#define MANUFACTURER_APPLE         0x4C
+#define BEACON_UUID                "74-27-8B-DA-B6-44-45-20-8F-0C-72-0E-AF-05-99-35"
+// #define BEACON_UUID                "01-12-23-34-45-56-67-78-89-9A-AB-BC-CD-DE-EF-F0"
+#define BEACON_MAJOR               0x00
+#define BEACON_MINOR               0x00
+#define BEACON_RSSI_1M             -54
+
+// BLUEFRUIT DEFAULT SETTINGS
+// ----------------------------------------------------------------------------------------------
+// The following macros declare some general purpose default values used for the
+// Bluefruit microcontroller.
+// ----------------------------------------------------------------------------------------------
+#define BLUEFRUIT_DEVICE_NAME       "Bluefruit_m0"
+#define BLUEFRUIT_FACTORY_RESET     true
+#define BLUEFRUIT_BEACON_ENABLED    true

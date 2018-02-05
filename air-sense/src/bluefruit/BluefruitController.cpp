@@ -9,6 +9,14 @@ void BluefruitController::setup() {
   if ( !ble.begin(VERBOSE_MODE) ){
     error("Couldn't start Bluefruit. Check wiring?");
   }
+  if (BLUEFRUIT_FACTORY_RESET) {
+    factoryReset();
+  }
+  setName(BLUEFRUIT_DEVICE_NAME);
+  if (BLUEFRUIT_BEACON_ENABLED) {
+    iBeacon(MANUFACTURER_APPLE, BEACON_UUID, BEACON_MAJOR, BEACON_MINOR, BEACON_RSSI_1M);
+  }
+  ble.reset();
 }
 
 void BluefruitController::reset() {
