@@ -34,10 +34,10 @@ bool Sensor::read_line() {
     char c;
     int pos = 0;
     while(read(fd, &c, 1)) {
-        if (c == '\r') {
+        if (c == '\n') {
             return verify_checksum();
         } else if (pos < LINE_SZ) {
-            if (c == '\n') {
+            if (c == '\r') {
                 linebuf[pos++] = '\0';
             } else {
                 linebuf[pos++] = c;
@@ -65,12 +65,12 @@ bool Sensor::verify_checksum() {
         chk_calc += linebuf[i]*i;
     }
 
+    // Data string ends where checksum starts
+    *chk = '\0';
+
     //printf("CHK: recv=%d calc=%d\n", chk_recv, chk_calc);
     if (chk_recv != chk_calc)
         return false;
-
-    // Data string ends where checksum starts
-    *chk = '\0';
 
     return true;
 }
