@@ -31,6 +31,7 @@ SnoozeBlock config(timer);
 #define BLUEFRUIT
 #include "src/bluefruit/BluefruitController.hpp"
 BluefruitController ble;
+uint32_t airqCharId = 0;
 #endif
 
 AQManager aq;
@@ -44,6 +45,9 @@ void setup() {
 #endif
 #ifdef BLUEFRUIT
     ble.setup();
+    ble.addService(BLUEFRUIT_AIRQ_SERVICE);
+    airqCharId = ble.addCharacteristic(BLUEFRUIT_AIRQ_CHAR, BLUEFRUIT_AIRQ_CHAR_PROP);
+    ble.reset();
 #endif
     delay(2000);
     aq.init();
@@ -55,6 +59,7 @@ void loop() {
     SER1.print(buf);
 #ifdef BLUEFRUIT  // Bluefruit
     ble.sendData(buf);
+    // ble.setCharacteristic(airqCharId, buf);
     delay(refreshInterval);
 #elif defined(SERU)  // HM-11 module
     SERU.print(buf);
