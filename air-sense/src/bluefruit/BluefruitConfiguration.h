@@ -74,3 +74,6 @@
 #define BLUEFRUIT_DEVICE_NAME       "Bluefruit_m0"
 #define BLUEFRUIT_FACTORY_RESET     true
 #define BLUEFRUIT_BEACON_ENABLED    true
+#define BLUEFRUIT_AIRQ_SERVICE      0xFFE0
+#define BLUEFRUIT_AIRQ_CHAR         0xFFE1
+#define BLUEFRUIT_AIRQ_CHAR_PROP    0x10

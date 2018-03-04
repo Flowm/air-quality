@@ -62,8 +62,12 @@ public:
   void iBeacon(uint16_t manufacturerId, const char * uuid, uint16_t major, uint16_t minor, uint8_t rssi);
   void eddystone();
   void advertise(bool enable);
+  void addService(uint16_t uuid);
+  void addService(const char * uuid);
+  uint32_t addCharacteristic(uint16_t uuid, uint8_t properties, uint8_t minLength = 1, uint8_t maxLength = 20);
+  uint32_t addCharacteristic(const char * uuid, uint8_t properties, uint8_t minLength = 1, uint8_t maxLength = 20);
+  void setCharacteristic(uint32_t charId, const char * data);
   void sendData(const char * data);
 private:
   Adafruit_BluefruitLE_SPI ble {BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST};
-//  Adafruit_BLEGatt gatt(ble);
 };

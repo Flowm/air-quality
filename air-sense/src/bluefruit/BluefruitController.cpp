@@ -116,11 +116,69 @@ void BluefruitController::advertise(bool enable) {
   }
 }
 
+void BluefruitController::addService(uint16_t uuid) {
+  char service [32] = {0};
+  int32_t serviceId = 0;
+  snprintf(service, 31, "AT+GATTADDSERVICE=UUID=%#x", uuid);
+  Serial.println(service);
+  if (!ble.sendCommandWithIntReply(service, &serviceId)) {
+    error("Couldn't setup service!");
+  }
+}
+
+void BluefruitController::addService(const char * uuid) {
+  char service [32] = {0};
+  int32_t serviceId = 0;
+  snprintf(service, 31, "AT+GATTADDSERVICE=UUID=0x%s", uuid);
+  Serial.println(service);
+  if (!ble.sendCommandWithIntReply(service, &serviceId)) {
+    error("Couldn't setup service!");
+  }
+}
+
+uint32_t BluefruitController::addCharacteristic(const char * uuid, uint8_t properties, uint8_t minLength, uint8_t maxLength) {
+  char characteristic [96] = {0};
+  int32_t charId = 0;
+  snprintf(characteristic, 95, "AT+GATTADDCHAR=UUID=%s, PROPERTIES=%#x, MIN_LEN=%u, MAX_LEN=%u", uuid, properties, minLength, maxLength);
+  Serial.println(characteristic);
+  if (!ble.sendCommandWithIntReply(characteristic, &charId)) {
+    error("Couldn't setup characteristic!");
+  }
+  return charId;
+}
+
+uint32_t BluefruitController::addCharacteristic(uint16_t uuid, uint8_t properties, uint8_t minLength, uint8_t maxLength) {
+  char characteristic [96] = {0};
+  int32_t charId = 0;
+  snprintf(characteristic, 95, "AT+GATTADDCHAR=UUID=%#x, PROPERTIES=%#x, MIN_LEN=%u, MAX_LEN=%u, DATATYPE=1", uuid, properties, minLength, maxLength);
+  Serial.println(characteristic);
+  if (!ble.sendCommandWithIntReply(characteristic, &charId)) {
+    error("Couldn't setup characteristic!");
+  }
+  return charId;
+}
+
+void BluefruitController::setCharacteristic(uint32_t charId, const char * data) {
+  // char preparedData[256] = {0};
+  char output[21] = {0};
+  // prepareData(data, preparedData);
+  int i=0, j=0;
+  while (data[i] != '\0') {
+    output[j++] = data[i++];
+    if (j >= 20 || data[i] == '\0') {
+      output[j] = '\0';
+      ble.print("AT+GATTCHAR=");
+      ble.print(charId);
+      ble.print(",");
+      ble.println(output);
+      j=0;
+    }
+  }
+}
+
 void BluefruitController::sendData(const char * data) {
   char output[256] = {0};
   int i=0, j=0;
-  Serial.println(data);
-  ble.print("AT+BLEUARTTX=");
   while (data[i] != '\0' && j < 240) { //240 max length allowed by bluetooth buffer
     if (data[i] == '\r') {
       output[j++] = '\\';
@@ -133,6 +191,8 @@ void BluefruitController::sendData(const char * data) {
     }
     i++;
   }
+  ble.print("AT+BLEUARTTX=");
   ble.println(output);
 }
+
 #endif
