@@ -1,0 +1,14 @@
+[Unit]
+    Description=Publish serial sensor data over mqtt
+    After=network.target
+    StartLimitIntervalSec=10min
+    StartLimitBurst=10
+
+[Service]
+    ExecStart=/opt/ser2mqtt/ser2mqtt.py
+    Type=simple
+    WatchdogSec=36000
+    Restart=always
+
+[Install]
+    WantedBy=multi-user.target
