@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import logging
-from serial_wrap import SerialWrap
-from aq_parse import AQParse
-from mqtt_broker import MqttBroker
+from lib.input.serial_wrap import SerialWrap
+from lib.parse.aq_parse import AQParse
+from lib.output.mqtt_broker import MqttBroker
 
 logging.basicConfig(level=logging.DEBUG, format="(%(threadName)-10s) %(levelname)s %(message)s")
 
