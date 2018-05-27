@@ -10,6 +10,9 @@ int SenBME680::init() {
 }
 
 int SenBME680::read() {
+    if (!getId()) {
+        return 1;
+    }
     bme.startConvert();
     delay(100);
     bme.update();
