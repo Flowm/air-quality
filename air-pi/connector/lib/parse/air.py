@@ -12,7 +12,7 @@ def str2digit(value):
             return None
 
 
-class AQParse:
+class AirParse:
     type = "env"
     cnt = 0
 
