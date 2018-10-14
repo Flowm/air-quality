@@ -8,7 +8,7 @@ from lib.output.mqtt import MqttBroker
 logging.basicConfig(level=logging.DEBUG, format="(%(threadName)-10s) %(levelname)s %(message)s")
 
 serial = SerialWrap("/dev/serial0", 9600, timeout=0.2)
-aq = AQParse()
+aq = AirParse()
 mqtt = MqttBroker()
 domain = "home"
 
