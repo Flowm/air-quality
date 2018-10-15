@@ -9,7 +9,6 @@ import time
 SENSOR_ADDR = "F0:C7:7F:94:7D:D1"
 SENSOR_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb"
 SENSOR_HANDLE = 0x12
-BROKER_IP = "localhost"
 TOPIC_ENVIRONMENT = "home/env/"
 TOPIC_DATASET = "dataset"
 TOPIC_GET = "/raw"
@@ -17,7 +16,7 @@ TOPIC_GET = "/raw"
 
 sensor_manager = SensorManager()
 ble = BleController()
-mqtt = MqttBroker(BROKER_IP)
+mqtt = MqttBroker()
 
 
 def on_ble_data(data):

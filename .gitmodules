@@ -1,4 +1,4 @@
 [submodule "air-pi/ansible"]
 	path = air-pi/ansible
-	url = git@github.com:Flowm/piot-ansible.git
+	url = https://github.com/Flowm/piot-ansible.git
 	branch = master
