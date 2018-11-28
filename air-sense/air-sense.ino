@@ -36,7 +36,7 @@ uint32_t airqCharId = 0;
 
 AQManager aq;
 int counter = 0;
-const int refreshInterval = 500;
+const int refreshInterval = 1000;
 
 void setup() {
     SER1.begin(9600);

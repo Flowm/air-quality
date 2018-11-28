@@ -10,6 +10,9 @@ int SenBME280IAQ::init() {
 }
 
 int SenBME280IAQ::read() {
+    if (!getId()) {
+        return 1;
+    }
     _temperature = bme.readTemperature();
     _humidity = bme.readHumidity();
     _pressure = bme.readPressure();
